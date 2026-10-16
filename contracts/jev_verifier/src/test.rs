@@ -41,7 +41,7 @@ fn sign(f: &F, d: &mut JevDecision, signers: &[u32]) {
 
 fn verify(f: &F, d: &JevDecision) -> bool {
     let c = JevVerifierClient::new(&f.e, &f.id);
-    c.verify(&f.digest.clone().into(), &f.key.clone().to_xdr(&f.e), &d.clone().to_xdr(&f.e))
+    c.verify(&f.digest.clone().into(), &encode_key(&f.e, &f.key), &d.clone().to_xdr(&f.e))
 }
 
 #[test] fn allow_above_threshold_passes() { let f = setup(1); assert!(verify(&f, &decision(&f, VERDICT_ALLOW, 950_000, &[0]))); }
@@ -74,11 +74,11 @@ fn verify(f: &F, d: &JevDecision) -> bool {
 }
 #[test] #[should_panic] fn malformed_decision_traps() {
     let f = setup(1); let c = JevVerifierClient::new(&f.e, &f.id);
-    c.verify(&f.digest.clone().into(), &f.key.clone().to_xdr(&f.e), &Bytes::from_array(&f.e, &[1, 2, 3]));
+    c.verify(&f.digest.clone().into(), &encode_key(&f.e, &f.key), &Bytes::from_array(&f.e, &[1, 2, 3]));
 }
 #[test] fn canonicalize_is_stable() {
     let f = setup(1); let c = JevVerifierClient::new(&f.e, &f.id);
-    let a = c.canonicalize_key(&f.key.clone().to_xdr(&f.e));
-    assert_eq!(a, c.canonicalize_key(&f.key.clone().to_xdr(&f.e)));
-    let mut k2 = f.key.clone(); k2.tau_allow_ppm = 1; assert_ne!(a, c.canonicalize_key(&k2.to_xdr(&f.e)));
+    let a = c.canonicalize_key(&encode_key(&f.e, &f.key));
+    assert_eq!(a, c.canonicalize_key(&encode_key(&f.e, &f.key)));
+    let mut k2 = f.key.clone(); k2.tau_allow_ppm = 1; assert_ne!(a, c.canonicalize_key(&encode_key(&f.e, &k2)));
 }

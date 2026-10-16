@@ -1,6 +1,6 @@
 //! # jev_verifier — OpenZeppelin `Verifier` carrying Jev decisions
 //!
-//! Installed on an OZ smart account as `Signer::External(jev_verifier, xdr(JevKey))`.
+//! Installed on an OZ smart account as `Signer::External(jev_verifier, encode_key(JevKey))`.
 //! The Jev operator (an off-chain service that calls TypeSafe's Jev model) co-signs the
 //! exact OZ `auth_digest` together with its decision. A `simple_threshold` 2-of-2 policy
 //! on the same context rule makes the agent key AND the Jev signer mandatory, so a single
@@ -25,7 +25,10 @@ pub const VERDICT_DENY: u32 = 0;
 pub const VERDICT_ALLOW: u32 = 1;
 pub const VERDICT_ESCALATE: u32 = 2;
 pub const PPM: u32 = 1_000_000;
-pub const MAX_OPERATORS: u32 = 8;
+pub const MAX_OPERATORS: u32 = 4;
+pub const KEY_VERSION: u8 = 1;
+/// Fixed header: version, k, n (3) + tau, template, max_age (12) + model, intent (64).
+const KEY_HEADER: u32 = 79;
 
 /// Grant-time key, committed by the user's passkey when the context rule is added.
 #[contracttype]
@@ -91,10 +94,60 @@ pub enum JevVerifierError {
     InvalidKeyParams = 4103,
 }
 
-pub fn decode_key(e: &Env, key_data: &Bytes) -> JevKey {
-    let key = JevKey::from_xdr(e, key_data)
-        .unwrap_or_else(|_| panic_with_error!(e, JevVerifierError::MalformedKey));
-    let n = key.operators.len();
+/// Compact binary key encoding. OZ caps External key_data at 256 bytes
+/// (`MAX_EXTERNAL_KEY_SIZE`), which an XDR map with field names exceeds, so the key is
+/// `ver|k|n|tau_be32|template_be32|max_age_be32|model[32]|intent[32]|op_pk[32]*n`
+/// (79 + 32n bytes; n<=4 => <=207 B).
+pub fn encode_key(e: &Env, key: &JevKey) -> Bytes {
+    let mut b = Bytes::new(e);
+    b.push_back(KEY_VERSION);
+    b.push_back(key.k as u8);
+    b.push_back(key.operators.len() as u8);
+    b.extend_from_array(&key.tau_allow_ppm.to_be_bytes());
+    b.extend_from_array(&key.template_id.to_be_bytes());
+    b.extend_from_array(&key.max_age_ledgers.to_be_bytes());
+    b.append(&key.model_id.clone().into());
+    b.append(&key.intent_hash.clone().into());
+    for pk in key.operators.iter() {
+        b.append(&pk.into());
+    }
+    b
+}
+
+fn be32(b: &Bytes, at: u32) -> u32 {
+    let mut a = [0u8; 4];
+    b.slice(at..at + 4).copy_into_slice(&mut a);
+    u32::from_be_bytes(a)
+}
+
+fn n32(e: &Env, b: &Bytes, at: u32) -> BytesN<32> {
+    let mut a = [0u8; 32];
+    b.slice(at..at + 32).copy_into_slice(&mut a);
+    BytesN::from_array(e, &a)
+}
+
+pub fn decode_key(e: &Env, b: &Bytes) -> JevKey {
+    if b.len() < KEY_HEADER || b.get_unchecked(0) != KEY_VERSION {
+        panic_with_error!(e, JevVerifierError::MalformedKey)
+    }
+    let k = b.get_unchecked(1) as u32;
+    let n = b.get_unchecked(2) as u32;
+    if b.len() != KEY_HEADER + 32 * n {
+        panic_with_error!(e, JevVerifierError::MalformedKey)
+    }
+    let mut operators = Vec::new(e);
+    for i in 0..n {
+        operators.push_back(n32(e, b, KEY_HEADER + 32 * i));
+    }
+    let key = JevKey {
+        operators,
+        k,
+        tau_allow_ppm: be32(b, 3),
+        template_id: be32(b, 7),
+        max_age_ledgers: be32(b, 11),
+        model_id: n32(e, b, 15),
+        intent_hash: n32(e, b, 47),
+    };
     if key.k == 0 || key.k > n || n > MAX_OPERATORS || key.tau_allow_ppm > PPM || key.max_age_ledgers == 0 {
         panic_with_error!(e, JevVerifierError::InvalidKeyParams)
     }
@@ -174,7 +227,7 @@ impl Verifier for JevVerifier {
     /// Canonical identity = sha256 of the re-encoded key, so two encodings of one key collide.
     fn canonicalize_key(e: &Env, key_data: Bytes) -> Bytes {
         let key = decode_key(e, &key_data);
-        e.crypto().sha256(&key.to_xdr(e)).to_bytes().into()
+        e.crypto().sha256(&encode_key(e, &key)).to_bytes().into()
     }
 
     fn batch_canonicalize_key(e: &Env, keys_data: Vec<Bytes>) -> Vec<Bytes> {
@@ -188,6 +241,13 @@ impl Verifier for JevVerifier {
 
 #[contractimpl]
 impl JevVerifier {
+    /// Helper for clients: compact key_data for `Signer::External(this, key_data)`.
+    pub fn encode_key(e: Env, key: JevKey) -> Bytes {
+        let b = encode_key(&e, &key);
+        decode_key(&e, &b);
+        b
+    }
+
     /// Helper for clients: the 32-byte message operators must sign.
     pub fn decision_msg(e: Env, auth_digest: BytesN<32>, decision: JevDecision) -> BytesN<32> {
         decision_message(&e, &auth_digest, &decision)
