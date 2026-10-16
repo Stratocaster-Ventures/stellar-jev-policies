@@ -126,14 +126,14 @@ fn denied_with(w: &W, ctx: Context, o: Opts, code: u32) {
 #[test] fn function_not_allowlisted_denies() {
     let w = setup();
     let args = vec![&w.e, w.account.clone().into_val(&w.e), w.other.into_val(&w.e), 10i128.into_val(&w.e), 2000u32.into_val(&w.e)];
-    denied_with(&w, call_ctx(&w, &w.token, symbol_short!("approve"), args), ok(), 3223); // OZ spending_limit rejects non-transfer calls before jev_policy runs
+    denied_with(&w, call_ctx(&w, &w.token, symbol_short!("approve"), args), ok(), 3223 /* OZ spending_limit NotAllowed: non-transfer calls rejected before jev_policy */);
 }
 #[test] fn contract_not_allowlisted_denies() {
     let w = setup(); let rogue = Address::generate(&w.e);
     let args = vec![&w.e, w.account.clone().into_val(&w.e), w.merchant.into_val(&w.e), 10i128.into_val(&w.e)];
     assert!(!check(&w, call_ctx(&w, &rogue, symbol_short!("transfer"), args), ok()));
 }
-#[test] fn jev_deny_vetoes() { let w = setup(); denied_with(&w, transfer_ctx(&w, &w.merchant, 10), Opts { verdict: VERDICT_DENY, ..ok() }, 3003); // ExternalVerificationFailed }
+#[test] fn jev_deny_vetoes() { let w = setup(); denied_with(&w, transfer_ctx(&w, &w.merchant, 10), Opts { verdict: VERDICT_DENY, ..ok() }, 3003 /* ExternalVerificationFailed */); }
 #[test] fn jev_low_confidence_denies() { let w = setup(); assert!(!check(&w, transfer_ctx(&w, &w.merchant, 10), Opts { p: 800_000, ..ok() })); }
 #[test] fn missing_jev_cosign_denies() { let w = setup(); assert!(!check(&w, transfer_ctx(&w, &w.merchant, 10), Opts { with_jev: false, ..ok() })); }
 #[test] fn jev_alone_cannot_spend() { let w = setup(); assert!(!check(&w, transfer_ctx(&w, &w.merchant, 10), Opts { with_agent: false, ..ok() })); }
