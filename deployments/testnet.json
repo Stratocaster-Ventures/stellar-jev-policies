@@ -1,0 +1,17 @@
+{
+  "network": "testnet",
+  "rpcUrl": "https://soroban-testnet.stellar.org",
+  "networkPassphrase": "Test SDF Network ; September 2015",
+  "deployedAt": "2026-10-16",
+  "soroban_sdk": "28.0.0",
+  "oz_stellar_contracts_rev": "33b665b",
+  "contracts": {
+    "jev_verifier": "CAPPEWGOIP5O657NVBWKSMYLTXDO4VRUJ3PTFAKRPL6MJSKRFN4CS3S7",
+    "jev_policy": "CDLFJR3PKOJ7M5BFEZ6PYADM7NV3MTRAE7OJ2FFN6ZOCDCU3SLBSDT6W",
+    "oz_ed25519_verifier": "CB3E6UFXCXH3PHZ6ZAEAO4EXUPKOVDSZM3GKUJ2IX632ZCAKULEG4JCJ",
+    "oz_simple_threshold": "CD3JDARBUPAVOGBTT643PVXTMVC56R2MPRCWH6IQURDC7CLIDPZH66ES",
+    "oz_spending_limit": "CCCYCEQUHUY6IB4MGJBVNJP5FKFTDIRDBNKIOID6DXU24IUHF5NSBP35"
+  },
+  "wasmHashes": { "oz_smart_account": "e741609f7996310ed87209e843a4af20aae2c565d7ae581ae477da0fbaa04c41" },
+  "assets": { "native_xlm_sac": "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC" }
+}
