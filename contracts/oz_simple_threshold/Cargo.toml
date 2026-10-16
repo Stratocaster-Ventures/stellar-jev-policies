@@ -1,0 +1,15 @@
+[package]
+name = "oz_simple_threshold"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+description = "Vendored from OpenZeppelin stellar-contracts@33b665b examples/multisig-smart-account/threshold-policy (MIT)"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = { workspace = true }
+stellar-accounts = { workspace = true }
