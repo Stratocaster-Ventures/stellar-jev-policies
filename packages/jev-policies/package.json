@@ -3,6 +3,14 @@
   "version": "0.1.0",
   "description": "POC/MVP TypeScript library + CLI + mock operator for Stellar JEV Policies",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stratocaster-Ventures/stellar-jev-policies.git"
+  },
+  "homepage": "https://github.com/Stratocaster-Ventures/stellar-jev-policies#readme",
+  "bugs": {
+    "url": "https://github.com/Stratocaster-Ventures/stellar-jev-policies/issues"
+  },
   "type": "module",
   "bin": {
     "jev-policies": "dist/cli.js"

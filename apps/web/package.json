@@ -4,6 +4,11 @@
   "version": "0.1.0",
   "type": "module",
   "description": "POC config UI: passkey smart account, Jev session install, live decision log",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stratocaster-Ventures/stellar-jev-policies.git",
+    "directory": "apps/web"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
