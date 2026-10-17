@@ -34,5 +34,7 @@
       "spending_limit_window": 3221
     },
     "log": "deployments/testnet-demo.log"
-  }
+  },
+  "webauthn_verifier": "CC7EKIHQP3TN4CARQDND6CEOY2UXLWWC2X5GHTD5NLAT7BG5GPZIOM3F",
+  "webauthn_verifier_source": "smart-account-kit demo/.env.example (stellar/smart-account-kit), Protocol 27 testnet deployment"
 }

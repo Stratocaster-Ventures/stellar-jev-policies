@@ -9,6 +9,7 @@ export interface Deployments {
   network: string; rpcUrl: string; networkPassphrase: string;
   contracts: Record<"jev_verifier" | "jev_policy" | "oz_ed25519_verifier" | "oz_simple_threshold" | "oz_spending_limit", string>;
   wasmHashes: { oz_smart_account: string };
+  webauthn_verifier?: string; // OZ WebAuthn verifier (stateless; smart-account-kit testnet deployment)
   assets: { native_xlm_sac: string };
 }
 export function loadDeployments(): Deployments {

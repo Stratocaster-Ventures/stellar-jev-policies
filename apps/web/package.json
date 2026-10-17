@@ -1,0 +1,20 @@
+{
+  "name": "@stellar-jev-policies/web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "POC config UI: passkey smart account, Jev session install, live decision log",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "@stellar-jev-policies/sdk": "file:../../packages/jev-policies",
+    "@stellar/stellar-sdk": "^17.2.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^6.0.0"
+  }
+}

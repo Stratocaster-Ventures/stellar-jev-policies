@@ -1,6 +1,6 @@
 // High-level flows: create account, install a Jev session rule, co-signed agent transfers.
 import { Keypair, Operation, xdr } from "@stellar/stellar-sdk";
-import { Chain } from "./chain.js";
+import { Chain, AuthSigner } from "./chain.js";
 import type { Deployments } from "./config.js";
 import { authDigest, authPayload, encodeJevKey, intentHash, modelIdHash, signerExternal } from "./encoding.js";
 import { addr, enumVariant, i128, map, none, str, struct, sym, u32, vec } from "./scval.js";
@@ -22,9 +22,10 @@ export const ownerAuth = (account: string, owner: Keypair, d: Deployments) =>
   async (_e: xdr.SorobanAuthorizationEntry, payload: Buffer) =>
     authPayload([[ownerSigner(d, owner), signB(owner, authDigest(account, payload, [OWNER_RULE]))]], [OWNER_RULE]);
 
-export async function createAccount(chain: Chain, feePayer: Keypair, owner: Keypair, fundXlm: number) {
+export async function createAccount(chain: Chain, feePayer: Keypair, owner: Keypair | xdr.ScVal, fundXlm: number) {
   const d = chain.d;
-  const { contractId, hash } = await chain.deployContract(feePayer, d.wasmHashes.oz_smart_account, [vec([ownerSigner(d, owner)]), map([])]);
+  const ownerS = owner instanceof Keypair ? ownerSigner(d, owner) : owner;
+  const { contractId, hash } = await chain.deployContract(feePayer, d.wasmHashes.oz_smart_account, [vec([ownerS]), map([])]);
   const fund = await chain.invoke(feePayer, Operation.invokeContractFunction({
     contract: d.assets.native_xlm_sac, function: "transfer",
     args: [addr(feePayer.publicKey()), addr(contractId), i128(BigInt(Math.round(fundXlm * 1e7)))],
@@ -52,14 +53,14 @@ export function sessionPolicies(d: Deployments, jev: xdr.ScVal, o: InstallOpts) 
 }
 
 /** add_context_rule(CallContract(token), "jev-agent-session", None, [agent, jev], {threshold 2, spending_limit, jev_policy}). */
-export async function installSession(chain: Chain, feePayer: Keypair, owner: Keypair, agent: Keypair, operator: Keypair, o: InstallOpts) {
+export async function installSession(chain: Chain, feePayer: Keypair, owner: Keypair | AuthSigner, agent: Keypair, operator: Keypair, o: InstallOpts) {
   const d = chain.d;
   const jev = jevSigner(d, operator, o.intent, o.key);
   const op = Operation.invokeContractFunction({
     contract: o.account, function: "add_context_rule",
     args: [enumVariant("CallContract", addr(o.token)), str("jev-agent-session"), none(), vec([agentSigner(d, agent), jev]), sessionPolicies(d, jev, o)],
   });
-  const r = await chain.invoke(feePayer, op, o.account, ownerAuth(o.account, owner, d));
+  const r = await chain.invoke(feePayer, op, o.account, owner instanceof Keypair ? ownerAuth(o.account, owner, d) : owner);
   return { hash: r.hash, ruleId: Number((r.ret as any).id), rule: r.ret };
 }
 
