@@ -12,6 +12,27 @@
     "oz_simple_threshold": "CD3JDARBUPAVOGBTT643PVXTMVC56R2MPRCWH6IQURDC7CLIDPZH66ES",
     "oz_spending_limit": "CCCYCEQUHUY6IB4MGJBVNJP5FKFTDIRDBNKIOID6DXU24IUHF5NSBP35"
   },
-  "wasmHashes": { "oz_smart_account": "e741609f7996310ed87209e843a4af20aae2c565d7ae581ae477da0fbaa04c41" },
-  "assets": { "native_xlm_sac": "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC" }
+  "wasmHashes": {
+    "oz_smart_account": "e741609f7996310ed87209e843a4af20aae2c565d7ae581ae477da0fbaa04c41"
+  },
+  "assets": {
+    "native_xlm_sac": "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC"
+  },
+  "demo": {
+    "smartAccount": "CDKCN6HEFGF4Q73ETF4D2UEKAB74SWA2WKFVNVVWLFTDUT7ZJKB3EQDA",
+    "sessionRuleId": 1,
+    "txs": {
+      "install_session": "dd132c205fa1f9074a05802865cda5cbfef9b0368e3ee03a08e029f50b52a1d1",
+      "allow_3xlm": "3bac5ef8c19bbedaab0f38c72c4fccfc9dcf18957a81eea07357b75360f47a58",
+      "allow_5xlm": "4fff5a27b4579e7ee44e619e1b5812a87cb418c856f9e9d82688080482c3dd3f",
+      "allow_1xlm_via_http_operator": "d8d8e2d327cd59977c374d0d66f25f4ebc105104ef64bd994a0c377a2c0abdcf"
+    },
+    "denials_at_enforcing_simulation": {
+      "jev_veto": 3003,
+      "jev_policy_recipient": 4207,
+      "jev_policy_per_call_cap": 4206,
+      "spending_limit_window": 3221
+    },
+    "log": "deployments/testnet-demo.log"
+  }
 }

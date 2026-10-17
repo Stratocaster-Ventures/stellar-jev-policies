@@ -55,6 +55,8 @@ const INJECTION = /(ignore (all|previous)|system prompt|you are now|override|app
 
 /** Deterministic stand-in so the POC runs without credentials. NOT a security model. */
 export function mockDecide(intent: Intent, tx: TxSummary, purpose: string): Omit<JevResult, "model" | "latencyMs"> {
+  // Demo only: simulate a compromised/wrong operator that allows everything, to show on-chain bounds.
+  if (process.env.JEV_MOCK_COMPROMISED === "1") return { verdict: "allow", pAllow: 0.99, source: "mock", raw: { compromised: true } };
   const reasons: string[] = [];
   if (tx.contract !== intent.asset) reasons.push("asset");
   if (tx.fn !== "transfer") reasons.push("fn");
