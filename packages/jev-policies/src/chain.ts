@@ -30,6 +30,12 @@ export class Chain {
    * verifier/policy footprints are captured), then submit.
    */
   async invoke(source: Keypair, op: xdr.Operation, account?: string, signer?: AuthSigner) {
+    const tx = await this.prepare(source, op, account, signer);
+    return this.submit(source, tx);
+  }
+
+  /** Simulate + sign smart-account auth + assemble, without submitting (e.g. for an x402 facilitator to settle). */
+  async prepare(source: Keypair, op: xdr.Operation, account?: string, signer?: AuthSigner) {
     let tx = await this.build(source, op);
     const sim = await this.server.simulateTransaction(tx);
     if (rpc.Api.isSimulationError(sim)) throw new Error(`simulate: ${sim.error}`);
@@ -54,6 +60,10 @@ export class Chain {
     } else {
       tx = rpc.assembleTransaction(tx, sim).build();
     }
+    return tx;
+  }
+
+  async submit(source: Keypair, tx: ReturnType<TransactionBuilder["build"]>) {
     tx.sign(source);
     const sent = await this.server.sendTransaction(tx);
     if (sent.status === "ERROR") throw new Error(`send: ${JSON.stringify(sent.errorResult?.toXDR("base64"))}`);

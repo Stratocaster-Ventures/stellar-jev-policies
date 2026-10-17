@@ -29,3 +29,12 @@ step "6 DENY on-chain: COMPROMISED operator allows 6 XLM (> 5/call) -> jev_polic
 step "7 ALLOW: second invoice (4 XLM; window 7/10)"; $CLI sign --to "$MERCHANT" --amount 4 --purpose "Invoice #1044 from approved vendor"
 step "8 DENY on-chain: 4 XLM would exceed 10/day -> spending_limit (#3221)"; $CLI sign --to "$MERCHANT" --amount 4 --purpose "Invoice #1045 from approved vendor"
 step "status"; $CLI status
+
+# 9+ x402: agent pays an x402-protected API via the OpenZeppelin Relayer x402 Facilitator Plugin (testnet).
+# Needs X402_FACILITATOR_API_KEY (or .jev/channels-testnet.json from https://channels.openzeppelin.com/testnet/gen).
+if [ -n "${X402_FACILITATOR_API_KEY:-}" ] || [ -f ../../.jev/channels-testnet.json ]; then
+  step "x402: agent pays an x402 API (OZ x402 facilitator), Jev co-signs the auth entry, jev_policy enforces"
+  node scripts/x402-demo.mjs
+else
+  echo "(skipping x402 demo: no facilitator API key)"
+fi

@@ -106,4 +106,23 @@ export async function cosignedTransfer(chain: Chain, feePayer: Keypair, agent: K
   return { ...r, decision: decision! };
 }
 
+/** Same co-signed flow, but returns the assembled (unsubmitted) tx XDR, e.g. as an x402 `exact` payload. */
+export async function cosignedTransferTx(chain: Chain, source: Keypair, agent: Keypair, operator: Keypair | undefined, o: TransferOpts) {
+  let decision: DecisionResponse | undefined;
+  const tx = await chain.prepare(source, Operation.invokeContractFunction({ contract: o.token, function: "transfer", args: [addr(o.account), addr(o.to), i128(o.amount)] }), o.account,
+    async (entry, payload, expiration) => {
+      decision = await requestDecision(operator, o.operatorUrl, {
+        networkPassphrase: chain.d.networkPassphrase, account: o.account, ruleId: o.ruleId, entryXdr: entry.toXDR("base64"),
+        expiration, currentLedger: await chain.latestLedger(), intent: o.intent, claimedPurpose: o.purpose,
+        model: o.key.model, templateId: o.key.templateId, maxAgeLedgers: o.key.maxAgeLedgers,
+      });
+      if ((decision.verdict !== 1 || decision.pAllowPpm < o.key.tauAllowPpm) && !o.force) throw new DecisionDenied(decision);
+      const digest = authDigest(o.account, payload, [o.ruleId]);
+      if (digest.toString("hex") !== decision.authDigest) throw new Error("operator signed a different digest");
+      if (!operator) throw new Error("jev signer key data needs the operator public key");
+      return authPayload([[agentSigner(chain.d, agent), signB(agent, digest)], [jevSigner(chain.d, operator, o.intent, o.key), Buffer.from(decision.decisionXdr, "base64")]], [o.ruleId]);
+    });
+  return { xdr: tx.toXDR(), decision: decision! };
+}
+
 function signB(k: Keypair, m: Uint8Array): Buffer { return Buffer.from(k.sign(Buffer.from(m))); }
