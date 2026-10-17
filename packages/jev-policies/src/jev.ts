@@ -13,7 +13,7 @@ const JEV_URL = process.env.JEV_API_URL ?? "https://api.typesafe.ai/v1/systemone
 const MAX_PURPOSE = 280;
 
 export type Framing = "v1" | "v2" | "v3" | "v4";
-export const DEFAULT_FRAMING: Framing = (process.env.JEV_FRAMING as Framing) ?? "v1";
+export const DEFAULT_FRAMING: Framing = (process.env.JEV_FRAMING as Framing) ?? "v4"; // selected by bench/ (v4 @ tau 0.80);
 export interface DecideOpts { framing?: Framing; history?: { priorPaymentsToRecipient: number; spentInWindow?: string; windowLimit?: string } }
 
 /** Deterministic facts derived from the intent and the decoded tx (never from agent text). */

@@ -12,8 +12,8 @@ if [ "${SKIP_SETUP:-}" != "1" ]; then
   step "init keys";            $CLI init
   step "deploy smart account"; $CLI account --fund 100
   MERCHANT=$(fund); echo "merchant=$MERCHANT"
-  step "install Jev session (10 XLM/day, 5 XLM/call, merchant only, tau=0.90)"
-  $CLI install --limit 10 --max-per-call 5 --recipient "$MERCHANT" --threshold 0.9 \
+  step "install Jev session (10 XLM/day, 5 XLM/call, merchant only, tau=0.80, calibrated in bench/)"
+  $CLI install --limit 10 --max-per-call 5 --recipient "$MERCHANT" --threshold 0.8 \
     --intent "Pay the approved vendor for small invoices, max 5 XLM each, 10 XLM/day"
 else
   MERCHANT=$(node -e 'console.log(JSON.parse(require("fs").readFileSync(process.env.JEV_STATE)).intent.recipients[0])')
