@@ -21,6 +21,10 @@ agent ──tx──▶ __check_auth ──▶ jev_verifier.verify  (Jev decisio
 ```
 \* The web UI uses a real passkey owner (secp256r1 via the OZ WebAuthn verifier). The CLI demo still uses an ed25519 owner key for scripting.
 
+## Architecture and spec docs
+
+See [docs/architecture/](docs/architecture/README.md) (overview, components, flows, normative spec, threat model, calibration, production roadmap, open questions) and the [research spike](docs/research/how-projects-present-architecture.md) on how other projects present architecture.
+
 ## What's here
 
 | Path | What |
