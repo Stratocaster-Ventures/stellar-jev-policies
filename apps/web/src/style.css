@@ -118,3 +118,7 @@ a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(2
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 @media (max-width: 860px) { .steps, .form, .form.three { grid-template-columns: 1fr; } .term-row { grid-template-columns: 1fr 1fr; } .term-cols { display: none; } h1 { font-size: 34px; } }
+.nav { display: flex; gap: 4px; margin-left: auto; margin-right: 18px; }
+.navlink { font-size: 12px; color: var(--ink-2); border: 1px solid transparent; padding: 5px 10px; border-radius: 6px; }
+.navlink:hover { border-color: var(--line); color: var(--ink); }
+.navlink.active { color: var(--accent); border-color: rgba(255,90,31,.3); background: var(--accent-soft); }

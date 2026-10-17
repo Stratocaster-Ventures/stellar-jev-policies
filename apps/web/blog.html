@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><link rel="icon" href="data:," />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Field notes · Why agentic payments need an authorization layer</title>
+</head>
+<body>
+  <div class="grid-bg" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="wrap topbar-in">
+      <div class="brand"><span class="glyph" aria-hidden="true">◆</span>stellar-jev-policies<span class="badge">poc</span></div>
+      <nav class="nav mono"><a class="navlink" href="/">console</a><a class="navlink active" href="/blog.html">field notes</a></nav>
+    </div>
+  </header>
+  <main class="wrap">
+    <article class="post">
+      <section class="hero">
+        <div class="eyebrow mono">[ FIELD NOTES · 001 ]</div>
+        <h1>Why agentic payments need an <span class="accent">authorization layer</span></h1>
+        <div class="meta mono">2026-10-16 · ~6 min · sources at the end</div>
+      </section>
+
+      <p>Agents can already pay on Stellar: x402 and MPP are live on mainnet. The open question isn't <em>can</em> an agent pay, it's <em>should it be allowed to sign this specific payment</em>. Looking at recent incidents across chains shows where an authorization layer helps, and just as clearly where it doesn't.</p>
+
+      <h2>The Stellar anchor: Blend / YieldBlox, Feb 2026</h2>
+      <p>On 2026-02-22 an attacker pushed the illiquid USTRY/USDC market on the Stellar DEX up about 100x with a tiny trade. The Reflector VWAP price followed. A YieldBlox community pool on Blend V2 accepted the inflated collateral and lent out its XLM and USDC, about $10.2M<sup><a href="#r1">[1]</a></sup>. Validators froze about 48M XLM<sup><a href="#r3">[3]</a></sup>.</p>
+      <blockquote>“This incident was not a Blend V2 core-contract issue. It was a pool-operator (YieldBlox DAO) configuration issue.” <span class="mono">BlockSec</span><sup><a href="#r2">[2]</a></sup></blockquote>
+      <p><b>Honest take:</b> a wallet policy would <b>not</b> have prevented this. The attacker's own account did exactly what the attacker wanted, and the failure was pool pricing. Policy signers can only limit how much <em>your</em> agent puts at risk when it interacts with such a pool (allowlists, per-call caps, a daily <span class="mono">spending_limit</span>). Oracle configuration is a protocol problem.</p>
+
+      <h2>Where an authorization layer does matter</h2>
+      <p><b>AIXBT (Base, Mar 2025).</b> An attacker got into an AI agent's operator dashboard and queued two prompts, and the agent sent 55.5 ETH (about $106k)<sup><a href="#r6">[6]</a></sup>. The maintainer said it wasn't AI manipulation; the control plane was compromised. Nothing independent stood between the instruction and the money moving. That's the gap a co-signer fills: it checks the payment against the user's intent from grant time, and per-call and daily caps bound the loss either way.</p>
+      <p><b>ElizaOS memory injection (research, 2025).</b> Princeton/Sentient researchers showed injected memories can trigger unauthorized transfers, and that prompt-injection defenses “only provide limited protection when stored context is corrupted”<sup><a href="#r7">[7]</a></sup>. That argues for a decision made <em>outside</em> the agent's context, from the passkey-signed intent and the decoded transaction, with agent text treated as untrusted. It also argues for bounds that don't depend on any model.</p>
+      <p><b>Hot-key and signer compromise.</b> Bybit lost about $1.5B after its signers approved a transaction that a tampered Safe{Wallet} UI disguised<sup><a href="#r4">[4]</a></sup>. Phemex lost about $73M across 16 chains, likely from compromised hot-wallet keys<sup><a href="#r5">[5]</a></sup>. Force Bridge lost about $3.76M after validator keys were exfiltrated. OAK's write-up points to the absence of “per-transaction velocity limits”<sup><a href="#r8">[8]</a></sup>. An agent key is a hot key. With policy signers a stolen agent key isn't enough on its own, and caps bound the damage even if the AI co-signer is also compromised.</p>
+      <p><b>Approvals and drainers (EVM, 2025).</b> Scam Sniffer counted $83.85M in drainer losses. Permit/Permit2 approvals accounted for 38% of losses in cases over $1M<sup><a href="#r9">[9]</a></sup>. On Stellar, <span class="mono">jev_policy</span> can cap or allowlist SEP-41 <span class="mono">approve</span>, or leave it off the function allowlist entirely.</p>
+
+      <h2>Where it doesn't: protocol bugs</h2>
+      <p>KiloEx (BNB Chain, Base and others; about $7.5M per Halborn, about $8.44M per SlowMist) left a permissionless forwarder that let an attacker set oracle prices<sup><a href="#r10">[10]</a></sup>. Loopscale (Solana; 5.73M USDC + 1,211 SOL, all recovered) accepted a spoofed pricing program<sup><a href="#r11">[11]</a></sup>. Cetus (Sui, about $223M) had one unchecked shift<sup><a href="#r12">[12]</a></sup>. These are contract and oracle bugs inside the protocol. No wallet-side policy fixes them.</p>
+
+      <h2>Control map (honest)</h2>
+      <table class="matrix">
+        <thead><tr><th>Incident</th><th>Class</th><th>Which control applies</th><th>Fit</th></tr></thead>
+        <tbody>
+          <tr><td>Blend / YieldBlox</td><td>oracle config (Stellar)</td><td>None prevents it. Allowlists, caps and <span class="mono">spending_limit</span> only limit an agent's own exposure.</td><td><span class="fit no">no</span></td></tr>
+          <tr><td>AIXBT</td><td>agent control-plane compromise (Base)</td><td>Jev co-sign vs passkey intent; per-call cap; daily <span class="mono">spending_limit</span>; AI-can-only-restrict</td><td><span class="fit yes">strong</span></td></tr>
+          <tr><td>ElizaOS research</td><td>memory / prompt injection</td><td>Out-of-context co-signer; deterministic caps don't depend on the model (bench is small and not adaptive)</td><td><span class="fit yes">strong</span></td></tr>
+          <tr><td>Phemex</td><td>hot-key compromise (CEX)</td><td>2-of-2 agent + Jev; caps bound the worst case</td><td><span class="fit part">partial</span></td></tr>
+          <tr><td>Force Bridge</td><td>validator keys (bridge, ETH/BNB)</td><td>The velocity-limit lesson = <span class="mono">spending_limit</span>; bridges aren't agent wallets</td><td><span class="fit part">analogy</span></td></tr>
+          <tr><td>Bybit</td><td>signing-UI tamper (ETH, CEX)</td><td>Operator rebuilds the action from chain data, plus a function allowlist; but this was a human multisig</td><td><span class="fit part">partial</span></td></tr>
+          <tr><td>Drainers / approvals</td><td>unlimited approvals (EVM)</td><td><span class="mono">approve</span> caps/allowlist on SEP-41; Stellar only</td><td><span class="fit part">partial</span></td></tr>
+          <tr><td>KiloEx · Loopscale · Cetus</td><td>protocol bugs</td><td>None</td><td><span class="fit no">no</span></td></tr>
+        </tbody>
+      </table>
+      <p>The thesis is narrow on purpose. Deterministic rules bound <em>how much</em>; an AI co-signer adds <em>whether</em> a payment matches what the user asked for, and it can only ever restrict. Our proof of concept on testnet measured this on a small benchmark. It's evidence, not a guarantee.</p>
+
+      <h2>Sources</h2>
+      <ol class="refs mono"><li id="r1">Halborn, YieldBlox hack (Feb 2026): <a href="https://www.halborn.com/blog/post/explained-the-yieldblox-hack-february-2026" target="_blank" rel="noreferrer">https://www.halborn.com/blog/post/explained-the-yieldblox-hack-february-2026</a></li><li id="r2">BlockSec, YieldBlox DAO incident: <a href="https://blocksec.com/blog/yieldblox-dao-incident-on-stellar-oracle-misconfiguration-enabled-a-10m-drain" target="_blank" rel="noreferrer">https://blocksec.com/blog/yieldblox-dao-incident-on-stellar-oracle-misconfiguration-enabled-a-10m-drain</a></li><li id="r3">Blockaid, 73% Quarantined; Protos (Script3 quote): <a href="https://www.blockaid.io/blog/73-quarantined-how-blockaid-and-stellar-validators-contained-a-10m-price-manipulation-attack" target="_blank" rel="noreferrer">https://www.blockaid.io/blog/73-quarantined-how-blockaid-and-stellar-validators-contained-a-10m-price-manipulation-attack</a></li><li id="r4">FBI PSA on Bybit (Feb 2025): <a href="https://www.fbi.gov/investigate/cyber/alerts/2025/north-korea-responsible-for-1-5-billion-bybit-hack" target="_blank" rel="noreferrer">https://www.fbi.gov/investigate/cyber/alerts/2025/north-korea-responsible-for-1-5-billion-bybit-hack</a></li><li id="r5">Halborn, Phemex hack (Jan 2025), root cause stated as likely: <a href="https://www.halborn.com/blog/post/explained-the-phemex-hack-january-2025" target="_blank" rel="noreferrer">https://www.halborn.com/blog/post/explained-the-phemex-hack-january-2025</a></li><li id="r6">Cointelegraph, AIXBT (2025-03-19): <a href="https://cointelegraph.com/news/hacker-breaches-ai-crypto-bot-aixbt-steals-55-eth" target="_blank" rel="noreferrer">https://cointelegraph.com/news/hacker-breaches-ai-crypto-bot-aixbt-steals-55-eth</a></li><li id="r7">Patlan et al., arXiv:2503.16248: <a href="https://arxiv.org/html/2503.16248v3" target="_blank" rel="noreferrer">https://arxiv.org/html/2503.16248v3</a></li><li id="r8">OAK, Force Bridge admin-key drainage: <a href="https://onchainattack.org/document/examples/2025-06-force-bridge/" target="_blank" rel="noreferrer">https://onchainattack.org/document/examples/2025-06-force-bridge/</a></li><li id="r9">Cryptonews on Scam Sniffer 2025 (2026-01-04): <a href="https://cryptonews.com/news/wallet-drainer-phishing-losses-fall-to-84m-in-2025-down-83/" target="_blank" rel="noreferrer">https://cryptonews.com/news/wallet-drainer-phishing-losses-fall-to-84m-in-2025-down-83/</a></li><li id="r10">KiloEx post-mortem: <a href="https://medium.com/@KiloEx/kiloex-security-incident-root-cause-analysis-post-mortem-3d899caac08c" target="_blank" rel="noreferrer">https://medium.com/@KiloEx/kiloex-security-incident-root-cause-analysis-post-mortem-3d899caac08c</a></li><li id="r11">Loopscale post-mortem: <a href="https://blog.loopscale.com/posts/postmortem" target="_blank" rel="noreferrer">https://blog.loopscale.com/posts/postmortem</a></li><li id="r12">BlockSec, Cetus incident: <a href="https://blocksec.com/blog/cetus-incident-one-unchecked-shift-drains-223m-largest" target="_blank" rel="noreferrer">https://blocksec.com/blog/cetus-incident-one-unchecked-shift-drains-223m-largest</a></li></ol>
+    </article>
+    <footer class="foot mono"><span>[ stellar-jev-policies · field notes ]</span><span>[ POC · not audited ]</span></footer>
+  </main>
+  <script type="module" src="/src/blog.ts"></script>
+</body>
+</html>
