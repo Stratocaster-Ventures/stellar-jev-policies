@@ -1,0 +1,28 @@
+{
+  "name": "@stellar-jev-policies/sdk",
+  "version": "0.1.0",
+  "description": "POC/MVP TypeScript library + CLI + mock operator for Stellar JEV Policies",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "jev-policies": "dist/cli.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "node --test dist/test/*.test.js",
+    "cli": "node dist/cli.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@stellar/stellar-sdk": "^17.2.1",
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "typescript": "^5.9.3"
+  }
+}
