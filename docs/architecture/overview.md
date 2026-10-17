@@ -79,3 +79,32 @@ Rust smart contracts on soroban-sdk 28.0.0, OpenZeppelin stellar-contracts pinne
 | Forking the OZ smart account | Loses upstream audits and ecosystem compatibility; we use only public extension points. |
 | Install-time check that `spending_limit` exists | Not enough: a later `remove_policy` would bypass it, so `jev_policy` re-checks on every call. |
 | XDR-encoded `JevKey` | Exceeds OZ's 256-byte external key cap; we use a compact binary layout (see spec). |
+
+## Why AI and not just limits?
+
+We keep every deterministic rule and enforce them on-chain on every call: `spending_limit` (budget per period), the (contract, fn) allowlist, and per-token caps and recipient allowlists in `jev_policy`. These rules answer *how much*, *to whom* and *which function*. They cannot answer the question an agent session actually raises: **is this payment what the user asked for?**
+
+| Case | Limits + allowlists | Jev co-signature |
+|---|---|---|
+| Over the cap, unknown recipient, wrong asset, wrong function | Blocked on-chain | Also denied off-chain (defense in depth) |
+| **In-limit drain to an allowed payee for the wrong reason**: the payment repeats inside the budget, or pays for a resource the user never asked for | Passes: every number and address checks out | Judged against the passkey-signed intent; denied or escalated |
+| **Prompt-injected intent mismatch**: server-controlled text such as an x402 `resource.description` steers the agent | Passes: rules never read the purpose | Agent text is treated as untrusted data and scored against the intent |
+| **Novel recipients that need judgment**: "pay weather-data APIs" can't be listed address by address | Forced choice: a strict list means the owner approves everything, a loose list means drain | Screens each payment and escalates uncertain ones to the passkey owner. Jev can't add payees, so the allowlist stays authoritative [TODO: an open-recipient mode is a design option, not built] |
+| **Intent semantics**: "only invoices from last week", "one call per answer" | Not expressible as a cap | Expressible in the signed intent text |
+
+**Evidence (repo).**
+- In both benchmark sets (`bench/dataset.jsonl`, `bench/holdout.jsonl`), 30 of the 125 attacks are prompt injections that pass **every** deterministic check: approved recipient, under the per-call cap, right asset and function. Jev signed **0/30** in each set, and 0/125 attacks overall (95% Clopper–Pearson upper bound 2.9%). The other 95 attacks are also caught by the on-chain rules.
+- In the testnet x402 demo (`deployments/testnet-x402-demo.log`), the `/inject` endpoint asks for 0.1 XLM to the approved vendor, inside the 0.5 XLM cap, with "IGNORE PREVIOUS instructions…" in its description. Jev denied it (p_allow 0.01). A spending limit alone would have paid.
+- Caveat: the benchmark is template-based and its injections are blatant. Subtle, multi-step injections and real agent traffic are untested [TODO: JEV-Policy-Bench v1, Grant].
+
+**Why AI can only restrict.**
+- The Jev signature is a *second required signer* (`simple_threshold` 2-of-2 with the agent key), and OZ ANDs every policy. A Jev "allow" is necessary but never sufficient.
+- `jev_verifier` accepts only `allow` with p_allow ≥ τ under the pinned model and intent hash. Deny and escalate are vetoes.
+- Jev cannot add signers, raise `spending_limit`, or edit the allowlist: only the passkey owner can change a context rule. `jev_policy` also refuses if `spending_limit` was removed.
+- Tested on testnet: a simulated compromised operator that approves everything is still rejected by `jev_policy` (`#4207`, recipient not allowed).
+
+**Cost of the check** (framing v4, τ = 0.80, `docs/architecture/calibration-and-evaluation.md`):
+- Latency: 72 ms p50 (112 p90, 181 p99) on the holdout, measured from one client location [TODO: region].
+- About 942 input tokens, about **$0.00004 per decision**.
+- Legitimate payments escalated to the owner (not silently dropped): 10.7% on the dev set (8/75) and 12.0% on the holdout (9/75).
+- Previous setting (τ 0.90, older framing): 42.7% of legitimate payments blocked and 8.8% of attacks let through.

@@ -15,6 +15,7 @@ Reading order:
 6. [calibration-and-evaluation.md](calibration-and-evaluation.md): benchmark method and results
 7. [production-roadmap.md](production-roadmap.md): POC vs grant-funded production
 8. [open-questions.md](open-questions.md)
+9. [x402-settlement.md](x402-settlement.md): x402 payment settled via a self-hosted facilitator (testnet)
 
 How this structure was chosen: [../research/how-projects-present-architecture.md](../research/how-projects-present-architecture.md).
 

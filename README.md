@@ -38,6 +38,7 @@ See [docs/architecture/](docs/architecture/README.md) (overview, components, flo
 | `bench/` | 200-case labeled calibration benchmark plus a 200-case holdout, run against real Jev: ROC/AUC, Clopper-Pearson bounds, framing v1–v4 comparison. τ is chosen from the measured curve. |
 | `apps/web` | Clickable config UI: passkey smart account, session policy (limit, cap, allowlists, τ), install signed with the passkey, agent simulator, live Jev decision log. |
 | `packages/jev-policies/scripts/x402-demo.mjs` | x402 on Stellar: an agent pays an x402 API through the OZ Relayer x402 Facilitator Plugin, with Jev co-signing the auth entry and jev_policy enforcing it. |
+| `packages/jev-policies/scripts/x402-settle-demo.mjs` (+ `x402-facilitator.mjs`) | Same x402 flow through a self-hosted `@x402/stellar` facilitator (fee ceiling 500k stroops, policy-aware event check); settles on testnet. |
 | `packages/jev-policies/scripts/passkey-e2e.mjs` | Node e2e: P-256 WebAuthn assertion → OZ WebAuthn verifier owner → install session → co-signed transfer. |
 
 ## Quickstart
@@ -115,6 +116,8 @@ The agent calls an x402 v2 resource server (`PAYMENT-REQUIRED` / `PAYMENT-SIGNAT
 | unknown payee + **compromised operator** | ⛔ `jev_policy #4207` in simulation |
 
 **Finding / open item:** a payment from a Jev-guarded OZ smart account needs a resource fee of about **310k stroops** (account with existing spend history) to **5.73M stroops** (first payment, new persistent entries). That is over the facilitator's fee ceiling (`@x402/stellar` default `maxTransactionFeeStroops` = 50,000). Settlement through the hosted facilitator therefore needs (a) a facilitator with a higher ceiling for smart-account payers and/or (b) cheaper `__check_auth` (fewer cross-contract calls and footprint entries, with pre-created spend-history entries). This is now a funded production work item.
+
+**Update: settled through a self-hosted facilitator (testnet).** `packages/jev-policies/scripts/x402-settle-demo.mjs` runs the x402 Foundation reference facilitator (`@x402/stellar` 2.28.0) in-process with a **500,000-stroop fee ceiling**. It also ignores non-balance audit events from the allowlisted policy contracts: the reference and OZ facilitators reject *any* non-`transfer` event, and OZ's own `spending_limit`/`simple_threshold` emit one during `__check_auth`. The account pre-pays its one-off TTL rent (`ExtendFootprintTTL`), so the warm payment costs ~319k stroops. Result: 0.1 XLM from the Jev-guarded smart account to the approved vendor, Jev allow 0.95, settled in tx [`50466d23…fe4477`](https://stellar.expert/explorer/testnet/tx/50466d2340bf501924420c242ac4d19f5f4d04bce24cae965a9bac60fcfe4477) (Horizon-verified, 275,080 stroops charged to the facilitator). The hosted OZ facilitator still refuses these payments. Details: [`docs/architecture/x402-settlement.md`](docs/architecture/x402-settlement.md), record: `deployments/testnet-x402-settled.json`.
 
 ## Versions and compatibility findings
 

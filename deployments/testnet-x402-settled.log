@@ -1,0 +1,94 @@
+{
+  "facilitator": {
+    "kind": "self-hosted @x402/stellar 2.28.0 ExactStellarScheme",
+    "url": "http://localhost:4022",
+    "signer": "GBM2CTZ2J6SUUNGBIWL6Q37DO4XIUZ5PLLFCFSSW7V2BB75BE62STRKT",
+    "maxTransactionFeeStroops": 500000,
+    "policyEventContracts": [
+      "CDLFJR3PKOJ7M5BFEZ6PYADM7NV3MTRAE7OJ2FFN6ZOCDCU3SLBSDT6W",
+      "CCCYCEQUHUY6IB4MGJBVNJP5FKFTDIRDBNKIOID6DXU24IUHF5NSBP35",
+      "CD3JDARBUPAVOGBTT643PVXTMVC56R2MPRCWH6IQURDC7CLIDPZH66ES"
+    ],
+    "deviationsFromReference": [
+      "maxTransactionFeeStroops 500000 (default 50000)",
+      "non-balance events from allowlisted policy contracts ignored by the event check"
+    ]
+  },
+  "setup": {
+    "smartAccount": "CB45TJGEUNMOPZQNEV34BWQCLEN3R2ET5VKB673AZKB3FUVBW6HJG7H3",
+    "vendor": "GCCPQUM3VZC5SBWWFY2XFAZ62ZWWXEYGROC5WOEDSXPZ7QQY6CNU4WO6",
+    "installTx": "778e967f927d4a0b6c4cd29f52158959b3651f186c3fffbe33b3660d2e3f1e69",
+    "ruleId": 1,
+    "tau": 0.8
+  }
+}
+
+=== 1. cold /weather (0.1 XLM -> approved vendor) ===
+{
+  "label": "1. cold /weather (0.1 XLM -> approved vendor)",
+  "outcome": "facilitator refused (402)",
+  "httpStatus": 402,
+  "simulatedMinResourceFeeStroops": 5707857,
+  "jev": {
+    "verdict": "allow",
+    "pAllow": 0.94,
+    "latencyMs": 111,
+    "source": "jev"
+  },
+  "body": {
+    "verify": {
+      "isValid": false,
+      "invalidReason": "invalid_exact_stellar_payload_fee_exceeds_maximum",
+      "payer": "CB45TJGEUNMOPZQNEV34BWQCLEN3R2ET5VKB673AZKB3FUVBW6HJG7H3",
+      "invalidMessage": "simulation-derived fee 5707957 stroops exceeds ceiling 500000 stroops"
+    }
+  }
+}
+
+=== 2. warm-up (owner pre-pays TTL rent) ===
+{"tx":"9bab6edd3b031f1e599a11ebf2ef57718643c017ba95faab3c3307c9c503f8fa","entries":23,"extendToLedgers":535680}
+
+=== 3. warm /weather (0.1 XLM -> approved vendor) ===
+{
+  "label": "3. warm /weather (0.1 XLM -> approved vendor)",
+  "outcome": "paid + settled by self-hosted x402 facilitator",
+  "httpStatus": 200,
+  "simulatedMinResourceFeeStroops": 318746,
+  "jev": {
+    "verdict": "allow",
+    "pAllow": 0.95,
+    "latencyMs": 73,
+    "source": "jev"
+  },
+  "body": {
+    "forecast": "Sunny, 24°C",
+    "settlement": {
+      "success": true,
+      "transaction": "50466d2340bf501924420c242ac4d19f5f4d04bce24cae965a9bac60fcfe4477",
+      "network": "stellar:testnet",
+      "payer": "CB45TJGEUNMOPZQNEV34BWQCLEN3R2ET5VKB673AZKB3FUVBW6HJG7H3"
+    }
+  }
+}
+
+=== 4a. /scam (0.1 XLM -> unknown payee) ===
+{
+  "label": "4a. /scam (0.1 XLM -> unknown payee)",
+  "outcome": "blocked off-chain by Jev operator",
+  "jev": {
+    "verdict": "deny",
+    "pAllow": 0,
+    "latencyMs": 101,
+    "source": "jev"
+  }
+}
+
+=== 4b. /scam with a simulated COMPROMISED Jev operator (approves everything) ===
+{
+  "label": "4b. /scam with a simulated COMPROMISED Jev operator (approves everything)",
+  "outcome": "rejected by on-chain policy (enforcing simulation)",
+  "code": "4207"
+}
+
+settled tx: 50466d2340bf501924420c242ac4d19f5f4d04bce24cae965a9bac60fcfe4477  https://stellar.expert/explorer/testnet/tx/50466d2340bf501924420c242ac4d19f5f4d04bce24cae965a9bac60fcfe4477
+wrote /workspace/x402spike/run4.json

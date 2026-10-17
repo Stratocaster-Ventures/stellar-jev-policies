@@ -97,5 +97,16 @@
     "verified": "all txs successful on Horizon testnet, checked 2026-10-16 19:45 CST",
     "log": "deployments/testnet-passkey-e2e.log",
     "supersedes_note": "Replaces the passkey run cited earlier as 762334de...9b16 / c9d8a3a3...3c5e, whose full hashes were not logged."
+  },
+  "x402_settled_selfhosted": {
+    "tx": "50466d2340bf501924420c242ac4d19f5f4d04bce24cae965a9bac60fcfe4477",
+    "smartAccount": "CB45TJGEUNMOPZQNEV34BWQCLEN3R2ET5VKB673AZKB3FUVBW6HJG7H3",
+    "amount_xlm": "0.1",
+    "facilitator": "self-hosted @x402/stellar 2.28.0, maxTransactionFeeStroops 500000, policy-aware event check",
+    "fee_charged_stroops": 275080,
+    "warmUpTx": "9bab6edd3b031f1e599a11ebf2ef57718643c017ba95faab3c3307c9c503f8fa",
+    "record": "deployments/testnet-x402-settled.json",
+    "doc": "docs/architecture/x402-settlement.md",
+    "horizonVerified": true
   }
 }
