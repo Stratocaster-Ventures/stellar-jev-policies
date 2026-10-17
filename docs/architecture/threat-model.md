@@ -41,5 +41,5 @@ Scope: POC contracts at the commit in `deployments/testnet.json` (OZ `33b665b`, 
 
 - Not audited. Single operator, local key. No operator registry or epoch rotation.
 - Benchmark is template-based (synthetic), 200 cases; real-world error rates may differ.
-- x402 settlement through the OZ hosted facilitator is blocked by its fee ceiling.
+- x402 settles on testnet only via our self-hosted facilitator, which allowlists events from 3 specific policy contracts; a misconfigured allowance could accept unexpected events, so the allowlist must stay exact. The OZ hosted facilitator still refuses (50k fee ceiling, non-`transfer` events).
 - Escalation UX is a simulator in the console.

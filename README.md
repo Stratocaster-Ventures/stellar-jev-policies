@@ -83,7 +83,7 @@ is used. The mock is not a security model; it only exists so the demo runs witho
 | 7 | Second invoice, 4 XLM (window 7/10) | ✅ settled on testnet (direct submission, tx `88eb8ad9…52b5`) | 0.99 | 137 ms |
 | 8 | 4 XLM more (would be 11/10) | ⛔ OZ `spending_limit` `#3221` | | |
 
-Full hashes are in `deployments/testnet.json` (`demo_real_jev_v4`) and every one was checked as successful on Horizon testnet. "Settled" here means the transaction was submitted directly to Soroban testnet RPC; no payment has settled through an x402 facilitator yet (see below).
+Full hashes are in `deployments/testnet.json` (`demo_real_jev_v4`) and every one was checked as successful on Horizon testnet. "Settled" here means the transaction was submitted directly to Soroban testnet RPC; x402 facilitator settlement is shown separately below (self-hosted facilitator, testnet).
 
 On-chain denials show up in the enforcing simulation, so the transaction is never submitted
 and no fee is paid. The operator gates off-chain on the same rule `jev_verifier` enforces
@@ -105,7 +105,7 @@ The script uses a software P-256 authenticator that produces real WebAuthn asser
 
 ### x402 on Stellar (`deployments/testnet-x402-demo.log`)
 
-The agent calls an x402 v2 resource server (`PAYMENT-REQUIRED` / `PAYMENT-SIGNATURE` headers), builds the `exact` payload (a SEP-41 `transfer` from its smart account with a Jev-co-signed auth entry), and the server asks `https://channels.openzeppelin.com/x402/testnet` to verify and settle it. **No x402 payment has settled yet**: the facilitator refuses at verify (below).
+The agent calls an x402 v2 resource server (`PAYMENT-REQUIRED` / `PAYMENT-SIGNATURE` headers), builds the `exact` payload (a SEP-41 `transfer` from its smart account with a Jev-co-signed auth entry), and the server asks `https://channels.openzeppelin.com/x402/testnet` to verify and settle it. The **hosted OZ facilitator refuses at verify** (below); the same payment **settles on testnet through a self-hosted facilitator** (see Update).
 
 | Endpoint | Result |
 |---|---|
@@ -115,7 +115,7 @@ The agent calls an x402 v2 resource server (`PAYMENT-REQUIRED` / `PAYMENT-SIGNAT
 | injection in the API's description | ⛔ Jev deny (0.01) |
 | unknown payee + **compromised operator** | ⛔ `jev_policy #4207` in simulation |
 
-**Finding / open item:** a payment from a Jev-guarded OZ smart account needs a resource fee of about **310k stroops** (account with existing spend history) to **5.73M stroops** (first payment, new persistent entries). That is over the facilitator's fee ceiling (`@x402/stellar` default `maxTransactionFeeStroops` = 50,000). Settlement through the hosted facilitator therefore needs (a) a facilitator with a higher ceiling for smart-account payers and/or (b) cheaper `__check_auth` (fewer cross-contract calls and footprint entries, with pre-created spend-history entries). This is now a funded production work item.
+**Finding / open item:** a payment from a Jev-guarded OZ smart account needs a resource fee of about **310k stroops** (account with existing spend history) to **5.73M stroops** (first payment, new persistent entries). That is over the facilitator's fee ceiling (`@x402/stellar` default `maxTransactionFeeStroops` = 50,000). Settlement through the hosted facilitator therefore needs (a) a facilitator with a higher ceiling for smart-account payers and/or (b) cheaper `__check_auth` (fewer cross-contract calls and footprint entries, with pre-created spend-history entries). Making the hosted path work (OZ facilitator policy-event allowance + a smart-account fee profile) is a funded grant deliverable.
 
 **Update: settled through a self-hosted facilitator (testnet).** `packages/jev-policies/scripts/x402-settle-demo.mjs` runs the x402 Foundation reference facilitator (`@x402/stellar` 2.28.0) in-process with a **500,000-stroop fee ceiling**. It also ignores non-balance audit events from the allowlisted policy contracts: the reference and OZ facilitators reject *any* non-`transfer` event, and OZ's own `spending_limit`/`simple_threshold` emit one during `__check_auth`. The account pre-pays its one-off TTL rent (`ExtendFootprintTTL`), so the warm payment costs ~319k stroops. Result: 0.1 XLM from the Jev-guarded smart account to the approved vendor, Jev allow 0.95, settled in tx [`50466d23…fe4477`](https://stellar.expert/explorer/testnet/tx/50466d2340bf501924420c242ac4d19f5f4d04bce24cae965a9bac60fcfe4477) (Horizon-verified, 275,080 stroops charged to the facilitator). The hosted OZ facilitator still refuses these payments. Details: [`docs/architecture/x402-settlement.md`](docs/architecture/x402-settlement.md), record: `deployments/testnet-x402-settled.json`.
 
@@ -141,7 +141,7 @@ The agent calls an x402 v2 resource server (`PAYMENT-REQUIRED` / `PAYMENT-SIGNAT
 - No `arg_bounds` extractors for Blend/Soroswap. Only SEP-41 transfer/approve rules are covered.
 - All POC keys, including the operator key, live in `.jev/` (gitignored). There is no TEE/KMS.
 - The benchmark is 200 + 200 template-generated cases. It is not the ≥1,200-case red-team set.
-- x402 settlement through the hosted facilitator is blocked by its fee ceiling (see above). Payments in the demo settle only by direct testnet submission.
+- x402 settles on testnet only through our self-hosted facilitator (tx `50466d23…fe4477`). The hosted OZ facilitator still refuses (50k-stroop fee ceiling and rejection of non-`transfer` policy events); fixing that upstream is a grant deliverable.
 - No escalation-to-passkey flow, `decision_verifier`, or tracing backend.
 
 ## What the grant turns into production

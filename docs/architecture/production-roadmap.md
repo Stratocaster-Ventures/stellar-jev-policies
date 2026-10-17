@@ -11,7 +11,7 @@ Budget: $125k (lean version $100k). Delivery by Stratocaster Ventures, led by Jo
 | Evaluation | 200-case template bench | JEV-Policy-Bench v1, >= 1,200 cases per family, CI gate |
 | Security | Not audited | **Audit** (SCF Audit Bank) with no open high/critical before mainnet; incident runbook; key-revocation drill |
 | Reliability | none | **SLOs**: decision availability >= 99.5%/month; p95 latency <= 2 s single-family, <= 4 s quorum [TODO: confirm against bench]; 100% trace coverage |
-| Payments | x402 blocked at facilitator fee ceiling | Fee-compatible x402 path (see open questions), MPP integration [TODO scope] |
+| Payments | x402 settles on testnet via self-hosted `@x402/stellar` facilitator (tx `50466d23…fe4477`); OZ hosted facilitator refuses | Upstream work: OZ facilitator policy-event allowance + smart-account fee profile (PRs/coordination with OZ); cheaper `__check_auth`; MPP integration [TODO scope] |
 | Network | Testnet | **Mainnet** deployment, SDK, docs, published metrics |
 
 Each deliverable ships with a verification method (contract ID, tx hash, CI run, public dashboard), per SCF guidance.

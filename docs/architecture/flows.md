@@ -83,21 +83,39 @@ sequenceDiagram
 
 Worst-case loss = min(spending_limit window, per-call caps x calls) restricted to allowlisted contracts and recipients. Recovery: owner removes the session rule with the passkey.
 
-## 6. x402 payment (currently blocked)
+## 6. x402 payment
+
+### 6a. Self-hosted facilitator (settles on testnet)
 
 ```mermaid
 sequenceDiagram
   participant A as Agent
   participant R as Resource server
   participant OP as Jev operator
-  participant F as OZ x402 facilitator (testnet)
+  participant F as Self-hosted @x402/stellar 2.28.0 facilitator
+  participant S as Soroban testnet
   A->>R: GET resource
   R-->>A: 402 + payment requirements
   A->>OP: decision for the payment auth entry
-  OP-->>A: allow (correct)
-  A->>F: verify(payload)
-  F-->>A: invalid_exact_stellar_payload_fee_exceeds_maximum
-  Note over A,F: measured fee 310k-5.73M stroops vs 50k ceiling. No settlement yet.
+  OP-->>A: allow (p 0.95, 73 ms)
+  A->>R: retry with PAYMENT-SIGNATURE
+  R->>F: verify + settle (ceiling 500k stroops, policy-event allowance)
+  F->>S: submit transfer (smart account __check_auth runs policies)
+  S-->>F: success, tx 50466d23...fe4477
+  R-->>A: 200 + resource
 ```
 
-Options are in [open-questions.md](open-questions.md).
+A one-time storage-rent prefund (`ExtendFootprintTTL`, tx `9bab6edd…`) keeps the warm payment under the ceiling. Details: [x402-settlement.md](x402-settlement.md).
+
+### 6b. OZ hosted facilitator (still refused)
+
+```mermaid
+sequenceDiagram
+  participant A as Agent
+  participant F as OZ x402 facilitator (testnet)
+  A->>F: verify(payload)
+  F-->>A: invalid_exact_stellar_payload_fee_exceeds_maximum
+  Note over A,F: fee 310k-5.73M stroops vs 50k ceiling; also rejects non-transfer policy events.
+```
+
+Upstream fix (policy-event allowance + smart-account fee profile) is a grant deliverable. Options are in [open-questions.md](open-questions.md).
