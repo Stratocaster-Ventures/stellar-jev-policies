@@ -1,53 +1,84 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" /><link rel="icon" href="data:," /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stellar JEV Policies</title>
+  <meta charset="UTF-8" /><link rel="icon" href="data:," />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stellar JEV Policies · console</title>
 </head>
 <body>
-  <header>
-    <div class="brand"><span class="mark">◆</span> Stellar JEV Policies <span class="tag">POC · testnet</span></div>
-    <div class="meta" id="meta"></div>
+  <div class="grid-bg" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="wrap topbar-in">
+      <div class="brand"><span class="glyph" aria-hidden="true">◆</span>stellar-jev-policies<span class="badge">poc</span><span class="badge dim">testnet</span></div>
+      <div class="status mono" id="meta">connecting…</div>
+    </div>
   </header>
-  <main>
-    <section class="card" id="s1">
-      <h2><span class="n">1</span> Passkey smart account</h2>
-      <p class="muted">An OpenZeppelin smart account whose owner is your passkey (secp256r1, verified on-chain by the OZ WebAuthn verifier).</p>
-      <div class="row"><button id="create">Create passkey account</button><span id="acct" class="mono"></span></div>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow mono">[ POLICY CONSOLE ]</div>
+      <h1>Deterministic security.<br /><span class="accent">Smart AI decisions.</span></h1>
+      <p class="lede">Give an AI agent a session on an OpenZeppelin smart account. Every payment needs a Jev co-signature, and on-chain rules cap the damage, even if the AI is compromised.</p>
+      <div class="chips mono"><span>[ OZ stellar-accounts ]</span><span>[ jev_verifier ]</span><span>[ jev_policy ]</span><span>[ spending_limit ]</span></div>
     </section>
-    <section class="card" id="s2">
-      <h2><span class="n">2</span> Agent session policy</h2>
-      <p class="muted">Deterministic rules enforced on-chain, plus a Jev co-signature that must clear your threshold.</p>
-      <div class="grid">
-        <label>Intent the user signs<textarea id="intent" rows="2">Pay the approved vendor for small invoices, max 5 XLM each, 10 XLM/day</textarea></label>
-        <label>Allowed recipients (one per line)<textarea id="recipients" rows="2" class="mono"></textarea><button class="ghost small" id="newrcpt">+ fresh testnet vendor</button></label>
-        <label>Spending limit / day (XLM)<input id="limit" type="number" value="10" /></label>
-        <label>Max per payment (XLM)<input id="cap" type="number" value="5" /></label>
-        <label>Allowed calls (contract:function)<input id="allow" class="mono" /></label>
-        <label>Jev threshold τ = <b id="tauv">0.80</b><input id="tau" type="range" min="0.5" max="0.99" step="0.01" value="0.80" />
-          <small class="muted">Calibrated in bench/: v4 framing at τ 0.80 → 0/125 attacks signed (95% CP ≤ 2.9%), 10.7% legit escalated.</small></label>
-      </div>
-      <div class="row"><button id="install">Install policy with passkey</button><span id="inst" class="mono"></span></div>
-    </section>
-    <section class="card" id="s3">
-      <h2><span class="n">3</span> Agent payment simulator</h2>
-      <div class="presets">
-        <button class="ghost small" data-p="ok">Invoice ✓</button>
-        <button class="ghost small" data-p="stranger">Unknown recipient</button>
-        <button class="ghost small" data-p="inject">Prompt injection</button>
-        <button class="ghost small" data-p="over">Over cap</button>
-      </div>
-      <div class="grid three">
-        <label>To<input id="to" class="mono" /></label>
-        <label>Amount (XLM)<input id="amt" type="number" value="3" /></label>
-        <label>Agent's claimed purpose (untrusted)<input id="purpose" value="Invoice #1042 from approved vendor" /></label>
-      </div>
-      <div class="row"><button id="pay">Send as agent</button><span id="payst" class="muted"></span></div>
-    </section>
-    <section class="card wide" id="s4">
-      <h2><span class="n">4</span> Live decision log</h2>
-      <table><thead><tr><th>time</th><th>outcome</th><th>Jev</th><th>p(allow)</th><th>latency</th><th>amount</th><th>purpose</th><th>tx / error</th></tr></thead><tbody id="log"></tbody></table>
-    </section>
+
+    <div class="steps">
+      <section class="panel" id="s1">
+        <div class="panel-head"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="mono label">01 / account</span><span class="mono tag">secp256r1</span></div>
+        <div class="panel-body">
+          <h2>Passkey smart account</h2>
+          <p class="muted">An OZ smart account owned by your passkey. The WebAuthn signature is verified on-chain by the OZ WebAuthn verifier.</p>
+          <div class="row"><button id="create" class="btn primary"><span>Create passkey account</span><kbd>↵</kbd></button><span id="acct" class="mono out"></span></div>
+        </div>
+      </section>
+
+      <section class="panel" id="s2">
+        <div class="panel-head"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="mono label">02 / session-policy</span><span class="mono tag">add_context_rule</span></div>
+        <div class="panel-body">
+          <h2>Agent session policy</h2>
+          <p class="muted">Deterministic rules enforced on-chain, plus a Jev co-signature that has to clear your threshold.</p>
+          <div class="form">
+            <label class="span2"><span class="k mono">intent</span><textarea id="intent" rows="2">Pay the approved vendor for small invoices, max 5 XLM each, 10 XLM/day</textarea></label>
+            <label class="span2"><span class="k mono">recipients[]</span><textarea id="recipients" rows="2" class="mono"></textarea><button class="btn ghost sm" id="newrcpt">+ fresh testnet vendor</button></label>
+            <label><span class="k mono">spending_limit / day · XLM</span><input id="limit" type="number" value="10" class="mono" /></label>
+            <label><span class="k mono">max_per_call · XLM</span><input id="cap" type="number" value="5" class="mono" /></label>
+            <label class="span2"><span class="k mono">allowlist · contract:fn</span><input id="allow" class="mono" /></label>
+            <label class="span2 tau"><span class="k mono">tau · p(allow) threshold <b id="tauv" class="accent">0.80</b></span><input id="tau" type="range" min="0.5" max="0.99" step="0.01" value="0.80" />
+              <span class="hint mono">bench/ · framing v4 @ τ 0.80 → 0/125 attacks signed (95% CP ≤ 2.9%) · 10.7% legit escalated</span></label>
+          </div>
+          <div class="row"><button id="install" class="btn primary"><span>Install policy with passkey</span><kbd>⌘</kbd></button><span id="inst" class="mono out"></span></div>
+        </div>
+      </section>
+
+      <section class="panel" id="s3">
+        <div class="panel-head"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="mono label">03 / agent-simulator</span><span class="mono tag">SEP-41 transfer</span></div>
+        <div class="panel-body">
+          <h2>Agent payment simulator</h2>
+          <div class="presets">
+            <button class="chip-btn mono" data-p="ok">invoice ✓</button>
+            <button class="chip-btn mono" data-p="stranger">unknown recipient</button>
+            <button class="chip-btn mono" data-p="inject">prompt injection</button>
+            <button class="chip-btn mono" data-p="over">over cap</button>
+          </div>
+          <div class="form three">
+            <label><span class="k mono">to</span><input id="to" class="mono" /></label>
+            <label><span class="k mono">amount · XLM</span><input id="amt" type="number" value="3" class="mono" /></label>
+            <label><span class="k mono">purpose · untrusted</span><input id="purpose" value="Invoice #1042 from approved vendor" /></label>
+          </div>
+          <div class="row"><button id="pay" class="btn primary"><span>Send as agent</span><kbd>→</kbd></button><span id="payst" class="mono out"></span></div>
+        </div>
+      </section>
+
+      <section class="panel term" id="s4">
+        <div class="panel-head"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="mono label">04 / decisions.log</span><span class="mono tag live"><i class="pulse"></i>live</span></div>
+        <div class="term-body mono">
+          <div class="term-row term-cols"><span>time</span><span>outcome</span><span>jev</span><span>p(allow)</span><span>latency</span><span>xlm</span><span>purpose</span><span>tx / reason</span></div>
+          <div id="log"></div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="foot mono"><span>[ OZ stellar-accounts · soroban-sdk 28 · jev-1.13.0 ]</span><span>[ POC · not audited ]</span></footer>
   </main>
   <script type="module" src="/src/main.ts"></script>
 </body>

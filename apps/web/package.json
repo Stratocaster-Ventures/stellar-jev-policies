@@ -10,6 +10,8 @@
     "start": "node server.mjs"
   },
   "dependencies": {
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/geist-mono": "^5.3.0",
     "@stellar-jev-policies/sdk": "file:../../packages/jev-policies",
     "@stellar/stellar-sdk": "^17.2.1"
   },

@@ -12,8 +12,8 @@ let cfg: any;
 
 async function refresh() {
   cfg = await api("/api/config");
-  $("meta").textContent = `${cfg.network} · ${cfg.jevMode === "jev" ? `Jev ${cfg.model} · framing ${cfg.framing}` : "MOCK Jev"}`;
-  if (cfg.account) $("acct").innerHTML = `account <a target="_blank" href="https://stellar.expert/explorer/testnet/contract/${cfg.account}">${cfg.account}</a>`;
+  $("meta").textContent = `${cfg.network} · ${cfg.jevMode === "jev" ? `${cfg.model} · framing ${cfg.framing}` : "mock jev"}`;
+  if (cfg.account) $("acct").innerHTML = `✓ <a target="_blank" href="https://stellar.expert/explorer/testnet/contract/${cfg.account}">${cfg.account}</a>`;
   if (!$("allow").value) $("allow").value = `${cfg.token}:transfer`;
   if (cfg.ruleId !== undefined && cfg.ruleId !== null && !$("inst").innerHTML.includes("<a")) $("inst").textContent = `session rule #${cfg.ruleId} installed`;
 }
@@ -37,7 +37,8 @@ $("create").onclick = async () => {
 };
 
 $("newrcpt").onclick = async () => { const { address } = await api("/api/new-address"); const t = $<HTMLTextAreaElement>("recipients"); t.value = (t.value.trim() + "\n" + address).trim(); if (!$("to").value) $("to").value = address; };
-$("tau").oninput = () => ($("tauv").textContent = Number($("tau").value).toFixed(2));
+const syncTau = () => { const el = $("tau"); $("tauv").textContent = Number(el.value).toFixed(2); el.style.setProperty("--fill", `${((Number(el.value) - 0.5) / 0.49) * 100}%`); };
+$("tau").oninput = syncTau; syncTau();
 
 $("install").onclick = async () => {
   const btn = $<HTMLButtonElement>("install"); btn.disabled = true; $("inst").textContent = "simulating add_context_rule…";
@@ -57,7 +58,7 @@ $("install").onclick = async () => {
         $("inst").textContent = "submitting…"; j.signed = true;
         while (!(await api("/api/install")).done) await new Promise((s) => setTimeout(s, 800));
         const f = await api("/api/install");
-        $("inst").innerHTML = f.error ? `error: ${f.error}` : `rule #${f.result.ruleId} installed · ${tx(f.result.hash)}`;
+        $("inst").innerHTML = f.error ? `error: ${escape(f.error)}` : `✓ rule #${f.result.ruleId} installed · ${tx(f.result.hash)}`;
         break;
       }
       if (j.done) { $("inst").textContent = j.error ?? "done"; break; }
@@ -82,13 +83,15 @@ $("pay").onclick = async () => {
   catch (e: any) { $("payst").textContent = `error: ${e.message}`; } finally { btn.disabled = false; renderLog(); }
 };
 
+const seen = new Set<string>();
 async function renderLog() {
   const rows: any[] = await api("/api/log");
   $("log").innerHTML = rows.map((r) => {
     const cls = r.outcome.startsWith("settled") ? "settled" : r.outcome.startsWith("blocked") ? "blocked" : "rejected";
-    const why = r.hash ? tx(r.hash) : r.code ? `#${r.code} ${EXPLAIN[r.code] ?? ""}` : (r.error ?? "");
-    return `<tr><td class="mono">${new Date(r.ts).toLocaleTimeString([], { hour12: false })}</td><td><span class="pill ${cls}">${r.outcome}</span></td><td>${r.jev?.verdict ?? "—"}</td><td>${r.jev ? r.jev.pAllow.toFixed(2) : "—"}</td><td>${r.jev ? r.jev.latencyMs + " ms" : "—"}</td><td>${r.amount}</td><td>${escape(r.purpose)}</td><td class="mono">${why}</td></tr>`;
-  }).join("") || `<tr><td colspan="8" class="muted">No decisions yet.</td></tr>`;
+    const why = r.hash ? tx(r.hash) : r.code ? `<span class="dim">#${r.code}</span> ${EXPLAIN[r.code] ?? ""}` : `<span class="dim">${escape(r.error ?? "jev below τ / deny")}</span>`;
+    const isNew = !seen.has(r.ts); seen.add(r.ts);
+    return `<div class="term-row${isNew ? " new" : ""}"><span class="dim">${new Date(r.ts).toLocaleTimeString([], { hour12: false })}</span><span class="pill ${cls}">${r.outcome}</span><span class="v-${r.jev?.verdict ?? "x"}">${r.jev?.verdict ?? "—"}</span><span class="num">${r.jev ? r.jev.pAllow.toFixed(2) : "—"}</span><span class="num dim">${r.jev ? r.jev.latencyMs + "ms" : "—"}</span><span class="num">${r.amount}</span><span>${escape(r.purpose)}</span><span>${why}</span></div>`;
+  }).join("") || `<div class="term-empty">$ waiting for agent decisions</div>`;
 }
 const escape = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
 refresh(); renderLog(); setInterval(renderLog, 2000);
