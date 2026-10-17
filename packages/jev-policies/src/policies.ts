@@ -91,7 +91,8 @@ export async function cosignedTransfer(chain: Chain, feePayer: Keypair, agent: K
       expiration, currentLedger: await chain.latestLedger(), intent: o.intent, claimedPurpose: o.purpose,
       model: o.key.model, templateId: o.key.templateId, maxAgeLedgers: o.key.maxAgeLedgers,
     });
-    if (decision.verdict !== 1 && !o.force) throw new DecisionDenied(decision);
+    // Gate off-chain on the same rule jev_verifier enforces: verdict ALLOW and p_allow >= tau.
+    if ((decision.verdict !== 1 || decision.pAllowPpm < o.key.tauAllowPpm) && !o.force) throw new DecisionDenied(decision);
     const digest = authDigest(o.account, payload, [o.ruleId]);
     if (digest.toString("hex") !== decision.authDigest) throw new Error("operator signed a different digest");
     if (!operator) throw new Error("jev signer key data needs the operator public key");

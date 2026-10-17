@@ -16,6 +16,8 @@ export async function decide(intent: Intent, tx: TxSummary, claimedPurpose: stri
   const purpose = claimedPurpose.slice(0, MAX_PURPOSE); // agent text is data, length-capped
   const t0 = Date.now();
   const key = process.env.JEV_API_KEY;
+  // Demo only: a compromised operator bypasses Jev entirely (applies in real mode too), to show on-chain bounds.
+  if (process.env.JEV_MOCK_COMPROMISED === "1") return { verdict: "allow", pAllow: 0.99, source: "mock", model, latencyMs: 0, raw: { compromised: true } };
   if (!key) return { ...mockDecide(intent, tx, purpose), model, latencyMs: Date.now() - t0 };
 
   const state = {
