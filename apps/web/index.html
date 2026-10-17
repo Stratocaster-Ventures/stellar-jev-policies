@@ -17,15 +17,15 @@
 
   <main class="wrap">
     <section class="hero">
-      <div class="eyebrow mono">[ POLICY CONSOLE ]</div>
+      <div class="eyebrow mono">Policy console · Stellar testnet</div>
       <h1>Deterministic security.<br /><span class="accent">Smart AI decisions.</span></h1>
       <p class="lede">Give an AI agent a session on an OpenZeppelin smart account. Every payment needs a Jev co-signature, and on-chain rules cap the damage, even if the AI is compromised.</p>
-      <div class="chips mono"><span>[ OZ stellar-accounts ]</span><span>[ jev_verifier ]</span><span>[ jev_policy ]</span><span>[ spending_limit ]</span></div>
+      <div class="chips mono"><span>OZ stellar-accounts</span><span>jev_verifier</span><span>jev_policy</span><span>spending_limit</span></div>
     </section>
 
     <div class="steps">
       <section class="panel" id="s1">
-        <div class="panel-head"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="mono label">01 / account</span><span class="mono tag">secp256r1</span></div>
+        <div class="panel-head"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="mono label">account</span><span class="mono tag">secp256r1</span></div>
         <div class="panel-body">
           <h2>Passkey smart account</h2>
           <p class="muted">An OZ smart account owned by your passkey. The WebAuthn signature is verified on-chain by the OZ WebAuthn verifier.</p>
@@ -34,7 +34,7 @@
       </section>
 
       <section class="panel" id="s2">
-        <div class="panel-head"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="mono label">02 / session-policy</span><span class="mono tag">add_context_rule</span></div>
+        <div class="panel-head"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="mono label">session-policy</span><span class="mono tag">add_context_rule</span></div>
         <div class="panel-body">
           <h2>Agent session policy</h2>
           <p class="muted">Deterministic rules enforced on-chain, plus a Jev co-signature that has to clear your threshold.</p>
@@ -52,7 +52,7 @@
       </section>
 
       <section class="panel" id="s3">
-        <div class="panel-head"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="mono label">03 / agent-simulator</span><span class="mono tag">SEP-41 transfer</span></div>
+        <div class="panel-head"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="mono label">agent-simulator</span><span class="mono tag">SEP-41 transfer</span></div>
         <div class="panel-body">
           <h2>Agent payment simulator</h2>
           <div class="presets">
@@ -71,7 +71,7 @@
       </section>
 
       <section class="panel term" id="s4">
-        <div class="panel-head"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="mono label">04 / decisions.log</span><span class="mono tag live"><i class="pulse"></i>live</span></div>
+        <div class="panel-head"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="mono label">decisions.log</span><span class="mono tag live"><i class="pulse"></i>live</span></div>
         <div class="term-body mono">
           <div class="term-row term-cols"><span>time</span><span>outcome</span><span>jev</span><span>p(allow)</span><span>latency</span><span>xlm</span><span>purpose</span><span>tx / reason</span></div>
           <div id="log"></div>
@@ -79,7 +79,7 @@
       </section>
     </div>
 
-    <footer class="foot mono"><span>[ OZ stellar-accounts · soroban-sdk 28 · jev-1.13.0 ]</span><span>[ POC · not audited ]</span></footer>
+    <footer class="foot mono"><span>OZ stellar-accounts · soroban-sdk 28 · jev-1.13.0</span><span>POC · not audited</span></footer>
   </main>
   <script type="module" src="/src/main.ts"></script>
 </body>
