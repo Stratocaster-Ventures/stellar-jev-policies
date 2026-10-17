@@ -1,0 +1,9 @@
+# passkey-e2e.mjs run, testnet, 2026-10-16 19:41 CST (2026-10-17 01:40 UTC)
+# software P-256 authenticator (Node crypto) signing real WebAuthn assertions, verified on-chain by the OZ WebAuthn verifier; real Jev decision
+account {
+  account: 'CBF3TV7PFYP3UOQK4VBVY2NTLWR5NOIYZJJGMNZXMAUBYF5XXQQKS6QU',
+  deployTx: '6ad0a1b9bd1c4521be63c1a7fa1f870608b70b8a159b42d0301962f799985b24',
+  fundTx: '759351788567892eb10b45f341315ef89f3a8380fc519074d4a8de699b2ede9b'
+}
+install(passkey-signed) d31d9c040be959aa686e19bb01e6ea8d3a765baab1fabae76296d4f5e5fc5f7b rule 1
+transfer 2e3ecfe7d21e40206ad33e0d0e77504b201c2191374aeffb130e85825e34c085 allow 0.95 108

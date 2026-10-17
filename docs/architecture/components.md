@@ -29,6 +29,8 @@ Commands: `init` (generate local keys, fund fee payer), `account` (deploy OZ sma
 
 ## Web console
 
+`scripts/passkey-e2e.mjs`: the same passkey-owner flow headless (software P-256 authenticator), with testnet txs in `deployments/testnet.json` (`demo_passkey_e2e`) and `deployments/testnet-passkey-e2e.log`.
+
 `apps/web`: real passkey owner (secp256r1 via the OZ WebAuthn verifier listed in `deployments/testnet.json`), session install, a payment simulator with presets (allow, deny, escalate, compromised operator), and the "Field Notes" blog on recent exploits. Styled after Stratocaster's design system.
 
 ## x402 demo

@@ -33,8 +33,69 @@
       "jev_policy_per_call_cap": 4206,
       "spending_limit_window": 3221
     },
-    "log": "deployments/testnet-demo.log"
+    "log": "deployments/testnet-demo.log",
+    "note": "Earlier run with the deterministic stub decider and an ed25519 owner (2026-10-16 ~18:05 CST). Superseded by demo_real_jev_v4 for evidence."
   },
   "webauthn_verifier": "CC7EKIHQP3TN4CARQDND6CEOY2UXLWWC2X5GHTD5NLAT7BG5GPZIOM3F",
-  "webauthn_verifier_source": "smart-account-kit demo/.env.example (stellar/smart-account-kit), Protocol 27 testnet deployment"
+  "webauthn_verifier_source": "smart-account-kit demo/.env.example (stellar/smart-account-kit), Protocol 27 testnet deployment",
+  "demo_real_jev_v4": {
+    "ranAt": "2026-10-17T00:33:47Z/2026-10-17T00:34:47Z (2026-10-16 18:33-18:34 CST)",
+    "jev_model": "jev-1.13.0",
+    "framing": "v4",
+    "tau": 0.8,
+    "owner": "ed25519 (CLI demo)",
+    "smartAccount": "CCHZB4CWCT3NLV5ZHY33I4HAKSDX6OMQPLSV37FTKCCDRUVKKWG5SCIJ",
+    "sessionRuleId": 1,
+    "intentHash": "fba5172667d8fd524df5c13a72db3ad7f5727bd2f76c07c1c4219e78652ded29",
+    "txs": {
+      "deploy_account": "bca57f2eecbb590d17637f7ddbb4fa6af826bec48680b9740e25b37d84d51803",
+      "fund_account": "3162c0a79d34f851ac4b850bc8ea0aeae24e493a396844aef461e796baf4e302",
+      "install_session": "7179962cf36bb9940cbac474ca6414bce145130f927ee72cd8e252caef6986b5",
+      "allow_3xlm": "e25fa712ade4eeae03499ac77d222966468e2d9f1bf1ec47830f156ffd95d625",
+      "allow_4xlm": "88eb8ad9b1a767f808d8858f3da81634ea68436fecbea4816fae6c86a9a552b5"
+    },
+    "jev": {
+      "allow_3xlm": {
+        "pAllow": 0.96,
+        "latencyMs": 116
+      },
+      "allow_4xlm": {
+        "pAllow": 0.99,
+        "latencyMs": 137
+      }
+    },
+    "denials_at_enforcing_simulation": {
+      "jev_veto": 3003,
+      "jev_policy_recipient": 4207,
+      "jev_policy_per_call_cap": 4206,
+      "spending_limit_window": 3221
+    },
+    "submission": "direct submission to Soroban testnet RPC (not via an x402 facilitator)",
+    "verified": "all txs successful on Horizon testnet, checked 2026-10-16 19:45 CST",
+    "log": "deployments/testnet-demo-real-jev-v4.log"
+  },
+  "demo_passkey_e2e": {
+    "ranAt": "2026-10-17T01:40:12Z/2026-10-17T01:40:42Z (2026-10-16 19:40 CST)",
+    "owner": "secp256r1 WebAuthn signer via OZ WebAuthn verifier; assertions produced by a software P-256 authenticator (Node crypto), not a hardware passkey",
+    "jev_model": "jev-1.13.0",
+    "tau": 0.8,
+    "smartAccount": "CBF3TV7PFYP3UOQK4VBVY2NTLWR5NOIYZJJGMNZXMAUBYF5XXQQKS6QU",
+    "txs": {
+      "deploy_account": "6ad0a1b9bd1c4521be63c1a7fa1f870608b70b8a159b42d0301962f799985b24",
+      "fund_account": "759351788567892eb10b45f341315ef89f3a8380fc519074d4a8de699b2ede9b",
+      "install_session_passkey_signed": "d31d9c040be959aa686e19bb01e6ea8d3a765baab1fabae76296d4f5e5fc5f7b",
+      "cosigned_transfer_2xlm": "2e3ecfe7d21e40206ad33e0d0e77504b201c2191374aeffb130e85825e34c085"
+    },
+    "jev": {
+      "cosigned_transfer_2xlm": {
+        "verdict": "allow",
+        "pAllow": 0.95,
+        "latencyMs": 108
+      }
+    },
+    "submission": "direct submission to Soroban testnet RPC",
+    "verified": "all txs successful on Horizon testnet, checked 2026-10-16 19:45 CST",
+    "log": "deployments/testnet-passkey-e2e.log",
+    "supersedes_note": "Replaces the passkey run cited earlier as 762334de...9b16 / c9d8a3a3...3c5e, whose full hashes were not logged."
+  }
 }

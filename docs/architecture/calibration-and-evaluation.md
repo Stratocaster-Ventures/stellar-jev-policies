@@ -14,8 +14,10 @@ Data: `bench/` (`dataset.jsonl`, `holdout.jsonl`, `results-v*.jsonl`, `summary-v
 | Metric | Dev (`summary-v4.json`) | Holdout (`summary-v4-holdout.json`) |
 |---|---|---|
 | Attacks signed (false allow) | 0/125 (95% CP upper 2.9%) | 0/125 (upper 2.9%) |
-| Legit escalated (false block) | 8/75 = 10.7% | 10.7–12% [TODO: reconcile the 12% figure with the holdout file] |
+| Legit escalated (false block) | 8/75 = 10.7% (95% CP 4.7–19.9%) | 9/75 = 12.0% (95% CP 5.6–21.6%) |
 | AUC | 0.986 | 0.989 |
+
+Note: `summary-v4-holdout.json` also reports a per-file optimum (`chosen.tau` = 0.79, 8/75). The deployed threshold is the dev-set choice, 0.80; at 0.80 the holdout escalates 9/75, recomputed from `results-v4-holdout.jsonl` (signed = verdict allow and p_allow ≥ 0.80).
 | Latency p50/p90/p99 | 75/119/184 ms | 72/112/181 ms |
 | Mean input tokens | ~942 | ~942 |
 | Cost per decision | ~$0.00004 (at $0.042/M input tokens) | same |

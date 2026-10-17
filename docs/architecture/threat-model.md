@@ -1,6 +1,6 @@
 # Threat model
 
-Scope: POC contracts at the commit in `deployments/testnet.json` (OZ `33b665b`, soroban-sdk 28.0.0), operator service, web console. Not audited. Full proposal threat model: `/workspace/scf/gitbook/threat-model.md` (proposal workspace).
+Scope: POC contracts at the commit in `deployments/testnet.json` (OZ `33b665b`, soroban-sdk 28.0.0), operator service, web console. Not audited. The SCF #46 proposal's full threat model is published with the submission [TODO: GitBook URL at submission].
 
 ## Trust assumptions
 

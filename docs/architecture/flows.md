@@ -39,12 +39,12 @@ sequenceDiagram
   V-->>SA: true
   SA->>Pol: simple_threshold 2-of-2, spending_limit, jev_policy.enforce
   Pol-->>SA: ok (JevPolicyEnforced event)
-  SA-->>A: transfer executed (demo txs allow_3xlm, allow_5xlm)
+  SA-->>A: transfer executed (testnet, direct submission: demo_real_jev_v4 txs in deployments/testnet.json)
 ```
 
 ## 3. Escalate to the owner
 
-Jev returns `escalate`, or `allow` with `p_allow < tau`. The operator still returns a signed decision, but `jev_verifier.verify` returns false, so the 2-of-2 threshold fails. The client routes the request to the owner, who can approve with the passkey under a separate owner rule [TODO: escalation UX beyond console simulator]. At tau 0.80, 10.7–12% of legitimate payments in the benchmark are escalated.
+Jev returns `escalate`, or `allow` with `p_allow < tau`. The operator still returns a signed decision, but `jev_verifier.verify` returns false, so the 2-of-2 threshold fails. The client routes the request to the owner, who can approve with the passkey under a separate owner rule [TODO: escalation UX beyond console simulator]. At tau 0.80, 10.7% (dev set) and 12.0% (holdout) of legitimate payments in the benchmark are escalated.
 
 ## 4. Deny
 

@@ -1,6 +1,6 @@
 # Production roadmap: POC vs grant-funded
 
-Budget: $125k (lean version $100k). Delivery by Stratocaster Ventures, led by Jose Carlos Toscano. Tranches follow SCF guidance: T1 MVP, T2 Testnet, T3 Mainnet. Detailed deliverables: `/workspace/scf/proposal-v5.md` and `/workspace/scf/gitbook/deliverable-specs-v4.md`.
+Budget: $125k (lean version $100k). Delivery by Stratocaster Ventures, led by Jose Carlos Toscano. Tranches follow SCF guidance: T1 MVP, T2 Testnet, T3 Mainnet. Detailed per-deliverable acceptance criteria are in the SCF #46 proposal and its GitBook [TODO: GitBook URL at submission].
 
 | Area | POC today | Grant-funded production |
 |---|---|---|
