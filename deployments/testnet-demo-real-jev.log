@@ -1,0 +1,404 @@
+
+=== init keys ===
+{
+  "state": "/workspace/stellar-jev-policies/packages/jev-policies/../../.jev/state.json",
+  "feePayer": "GCXKLENN4SU7HUIEMH5MZKLQWAYQGVGAM6B3EGXOLP26VRJCV3SJOYDK",
+  "owner": "GDCLUSXZVSML4FSQIIAXH4YGRRVJWMC22SHOMN73XUPQCOUCRPNQJRN4",
+  "agent": "GDQ7LQ5CZFV3JUQLDZPKD25UITTGBQ7G5APPBVHHY3LN4CUEOZEYSPSC",
+  "operator": "GDXIPLM3QUCHYPJUWIPMR2SXUSEJ33UVASGWJOK5BCJ7OSOT6UIILPTP"
+}
+
+=== deploy smart account ===
+{
+  "account": "CDS3H2CYBBDQP7OEQAMOOUJRKKZE7ESL7QV2DKTALTXDOGYESLC23AAS",
+  "deployTx": "d0d9d7afcba71478ff2e9e13da7c929015c910402f83c70f1ed158626b156983",
+  "fundTx": "36ea14f8290b57a7b1521896516543be066b860d361bc37d169fb0339964deed"
+}
+merchant=GCNDPJ3H26FARS7O73B4BYN77U7CF6AWWQNZRIMXSCRB7B5Y7CTQP6VG
+
+=== install Jev session (10 XLM/day, 5 XLM/call, merchant only, tau=0.90) ===
+{
+  "hash": "13b203fc76f837c3c6384530f114d1ddeacbff99e4246724c170fc41b34a4455",
+  "ruleId": 1,
+  "intentHash": "5f27b0c122eb0818bb0884276e476f2dac79b38b007a6d08eaaa24b0c93468ad",
+  "key": {
+    "tauAllowPpm": 900000,
+    "templateId": 1,
+    "maxAgeLedgers": 12,
+    "model": "jev-1.13.0"
+  }
+}
+
+=== 1 ALLOW: in-intent invoice payment (3 XLM; window 3/10) ===
+{
+  "status": "submitted",
+  "hash": "1e9ec43ebb9168c439d5c9586a3199f1e93b373510d8f07586c9732fe981414c",
+  "jev": {
+    "verdict": "allow",
+    "pAllow": 0.92,
+    "model": "jev-1.13.0",
+    "source": "jev",
+    "latencyMs": 103,
+    "raw": {
+      "model": "jev-1.13.0",
+      "answers": {
+        "decision": {
+          "type": "choice",
+          "choice": "allow",
+          "confidence": 0.88,
+          "probabilities": {
+            "allow": 0.92,
+            "deny": 0.03,
+            "escalate": 0.05
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 689,
+        "output_tokens": 40
+      }
+    }
+  },
+  "pAllowPpm": 920000
+}
+
+=== 2 DENY off-chain: unknown recipient (operator refuses to co-sign) ===
+{
+  "status": "blocked-offchain",
+  "jev": {
+    "verdict": "deny",
+    "pAllow": 0.02,
+    "model": "jev-1.13.0",
+    "source": "jev",
+    "latencyMs": 135,
+    "raw": {
+      "model": "jev-1.13.0",
+      "answers": {
+        "decision": {
+          "type": "choice",
+          "choice": "deny",
+          "confidence": 0.85,
+          "probabilities": {
+            "allow": 0.02,
+            "deny": 0.9,
+            "escalate": 0.08
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 683,
+        "output_tokens": 40
+      }
+    }
+  }
+}
+
+=== 3 DENY on-chain: Jev deny forced into the tx -> jev_verifier veto (#3003) ===
+{
+  "status": "rejected",
+  "error": "simulate(enforcing): HostError: Error(Auth, InvalidAction)\n\nEvent log (newest first):\n   0: [Diagnostic Event] contract:CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC, topics:[error, Error(Auth, InvalidAction)], data:[\"failed account authentication with error\", CDS3H2CYBBDQP7OEQAMOOUJRKKZE7ESL7QV2DKTALTXDOGYESLC23AAS, Error(Contract, #3003)]\n   1: [Failed Diagnostic Event (not emitted)] contract:CDS3H2CYBBDQP7OEQAMOOUJRKKZE7ESL7QV2DKTALTXDOGYESLC23AAS, topics:[log], data:[\"VM call trapped with HostError\", __check_auth, Error(Contract, #3003)]\n   2: [Failed Diagnostic Event (not emitt"
+}
+
+=== 4 DENY off-chain (p_allow < tau) or on-chain veto: prompt injection in claimed purpose ===
+{
+  "status": "blocked-offchain",
+  "jev": {
+    "verdict": "allow",
+    "pAllow": 0.87,
+    "model": "jev-1.13.0",
+    "source": "jev",
+    "latencyMs": 138,
+    "raw": {
+      "model": "jev-1.13.0",
+      "answers": {
+        "decision": {
+          "type": "choice",
+          "choice": "allow",
+          "confidence": 0.8,
+          "probabilities": {
+            "allow": 0.87,
+            "deny": 0.1,
+            "escalate": 0.03
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 689,
+        "output_tokens": 40
+      }
+    }
+  }
+}
+
+=== 5 DENY on-chain: COMPROMISED operator allows unknown recipient -> jev_policy RecipientNotAllowed (#4207) ===
+{
+  "status": "rejected",
+  "error": "simulate(enforcing): HostError: Error(Auth, InvalidAction)\n\nEvent log (newest first):\n   0: [Diagnostic Event] contract:CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC, topics:[error, Error(Auth, InvalidAction)], data:[\"failed account authentication with error\", CDS3H2CYBBDQP7OEQAMOOUJRKKZE7ESL7QV2DKTALTXDOGYESLC23AAS, Error(Contract, #4207)]\n   1: [Failed Diagnostic Event (not emitted)] contract:CDS3H2CYBBDQP7OEQAMOOUJRKKZE7ESL7QV2DKTALTXDOGYESLC23AAS, topics:[log], data:[\"VM call trapped with HostError\", __check_auth, Error(Contract, #4207)]\n   2: [Failed Diagnostic Event (not emitt"
+}
+
+=== 6 DENY on-chain: COMPROMISED operator allows 6 XLM (> 5/call) -> jev_policy AmountExceedsTokenRule (#4206) ===
+{
+  "status": "rejected",
+  "error": "simulate(enforcing): HostError: Error(Auth, InvalidAction)\n\nEvent log (newest first):\n   0: [Diagnostic Event] contract:CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC, topics:[error, Error(Auth, InvalidAction)], data:[\"failed account authentication with error\", CDS3H2CYBBDQP7OEQAMOOUJRKKZE7ESL7QV2DKTALTXDOGYESLC23AAS, Error(Contract, #4206)]\n   1: [Failed Diagnostic Event (not emitted)] contract:CDS3H2CYBBDQP7OEQAMOOUJRKKZE7ESL7QV2DKTALTXDOGYESLC23AAS, topics:[log], data:[\"VM call trapped with HostError\", __check_auth, Error(Contract, #4206)]\n   2: [Failed Diagnostic Event (not emitt"
+}
+
+=== 7 ALLOW: second invoice (4 XLM; window 7/10) ===
+{
+  "status": "submitted",
+  "hash": "e0376c58e0e98c7de8bf8579d7939d52fc9ffd361239a47ae5bb1ae2ae2700cf",
+  "jev": {
+    "verdict": "allow",
+    "pAllow": 0.9,
+    "model": "jev-1.13.0",
+    "source": "jev",
+    "latencyMs": 115,
+    "raw": {
+      "model": "jev-1.13.0",
+      "answers": {
+        "decision": {
+          "type": "choice",
+          "choice": "allow",
+          "confidence": 0.85,
+          "probabilities": {
+            "allow": 0.9,
+            "deny": 0.05,
+            "escalate": 0.05
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 689,
+        "output_tokens": 40
+      }
+    }
+  },
+  "pAllowPpm": 900000
+}
+
+=== 8 DENY on-chain: 4 XLM would exceed 10/day -> spending_limit (#3221) ===
+{
+  "status": "rejected",
+  "error": "simulate(enforcing): HostError: Error(Auth, InvalidAction)\n\nEvent log (newest first):\n   0: [Diagnostic Event] contract:CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC, topics:[error, Error(Auth, InvalidAction)], data:[\"failed account authentication with error\", CDS3H2CYBBDQP7OEQAMOOUJRKKZE7ESL7QV2DKTALTXDOGYESLC23AAS, Error(Contract, #3221)]\n   1: [Failed Diagnostic Event (not emitted)] contract:CDS3H2CYBBDQP7OEQAMOOUJRKKZE7ESL7QV2DKTALTXDOGYESLC23AAS, topics:[log], data:[\"VM call trapped with HostError\", __check_auth, Error(Contract, #3221)]\n   2: [Failed Diagnostic Event (not emitt"
+}
+
+=== status ===
+{
+  "account": "CDS3H2CYBBDQP7OEQAMOOUJRKKZE7ESL7QV2DKTALTXDOGYESLC23AAS",
+  "ruleId": 1,
+  "key": {
+    "tauAllowPpm": 900000,
+    "templateId": 1,
+    "maxAgeLedgers": 12,
+    "model": "jev-1.13.0"
+  },
+  "intent": {
+    "description": "Pay the approved vendor for small invoices, max 5 XLM each, 10 XLM/day",
+    "asset": "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
+    "recipients": [
+      "GCNDPJ3H26FARS7O73B4BYN77U7CF6AWWQNZRIMXSCRB7B5Y7CTQP6VG"
+    ],
+    "max_amount": "50000000"
+  },
+  "contracts": {
+    "jev_verifier": "CAPPEWGOIP5O657NVBWKSMYLTXDO4VRUJ3PTFAKRPL6MJSKRFN4CS3S7",
+    "jev_policy": "CDLFJR3PKOJ7M5BFEZ6PYADM7NV3MTRAE7OJ2FFN6ZOCDCU3SLBSDT6W",
+    "oz_ed25519_verifier": "CB3E6UFXCXH3PHZ6ZAEAO4EXUPKOVDSZM3GKUJ2IX632ZCAKULEG4JCJ",
+    "oz_simple_threshold": "CD3JDARBUPAVOGBTT643PVXTMVC56R2MPRCWH6IQURDC7CLIDPZH66ES",
+    "oz_spending_limit": "CCCYCEQUHUY6IB4MGJBVNJP5FKFTDIRDBNKIOID6DXU24IUHF5NSBP35"
+  },
+  "rule": {
+    "context_type": [
+      "CallContract",
+      "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC"
+    ],
+    "id": 1,
+    "name": "jev-agent-session",
+    "policies": [
+      "CCCYCEQUHUY6IB4MGJBVNJP5FKFTDIRDBNKIOID6DXU24IUHF5NSBP35",
+      "CDLFJR3PKOJ7M5BFEZ6PYADM7NV3MTRAE7OJ2FFN6ZOCDCU3SLBSDT6W",
+      "CD3JDARBUPAVOGBTT643PVXTMVC56R2MPRCWH6IQURDC7CLIDPZH66ES"
+    ],
+    "policy_ids": [
+      0,
+      1,
+      2
+    ],
+    "signer_ids": [
+      1,
+      2
+    ],
+    "signers": [
+      [
+        "External",
+        "CB3E6UFXCXH3PHZ6ZAEAO4EXUPKOVDSZM3GKUJ2IX632ZCAKULEG4JCJ",
+        {
+          "0": 225,
+          "1": 245,
+          "2": 195,
+          "3": 162,
+          "4": 201,
+          "5": 107,
+          "6": 180,
+          "7": 210,
+          "8": 11,
+          "9": 30,
+          "10": 94,
+          "11": 161,
+          "12": 235,
+          "13": 180,
+          "14": 68,
+          "15": 230,
+          "16": 96,
+          "17": 195,
+          "18": 230,
+          "19": 232,
+          "20": 30,
+          "21": 240,
+          "22": 212,
+          "23": 231,
+          "24": 198,
+          "25": 214,
+          "26": 222,
+          "27": 10,
+          "28": 132,
+          "29": 118,
+          "30": 73,
+          "31": 137
+        }
+      ],
+      [
+        "External",
+        "CAPPEWGOIP5O657NVBWKSMYLTXDO4VRUJ3PTFAKRPL6MJSKRFN4CS3S7",
+        {
+          "0": 1,
+          "1": 1,
+          "2": 1,
+          "3": 0,
+          "4": 13,
+          "5": 187,
+          "6": 160,
+          "7": 0,
+          "8": 0,
+          "9": 0,
+          "10": 1,
+          "11": 0,
+          "12": 0,
+          "13": 0,
+          "14": 12,
+          "15": 2,
+          "16": 111,
+          "17": 124,
+          "18": 166,
+          "19": 235,
+          "20": 55,
+          "21": 6,
+          "22": 37,
+          "23": 74,
+          "24": 112,
+          "25": 122,
+          "26": 48,
+          "27": 79,
+          "28": 43,
+          "29": 196,
+          "30": 120,
+          "31": 207,
+          "32": 130,
+          "33": 91,
+          "34": 79,
+          "35": 81,
+          "36": 250,
+          "37": 181,
+          "38": 219,
+          "39": 235,
+          "40": 249,
+          "41": 251,
+          "42": 156,
+          "43": 85,
+          "44": 184,
+          "45": 192,
+          "46": 9,
+          "47": 95,
+          "48": 39,
+          "49": 176,
+          "50": 193,
+          "51": 34,
+          "52": 235,
+          "53": 8,
+          "54": 24,
+          "55": 187,
+          "56": 8,
+          "57": 132,
+          "58": 39,
+          "59": 110,
+          "60": 71,
+          "61": 111,
+          "62": 45,
+          "63": 172,
+          "64": 121,
+          "65": 179,
+          "66": 139,
+          "67": 0,
+          "68": 122,
+          "69": 109,
+          "70": 8,
+          "71": 234,
+          "72": 170,
+          "73": 36,
+          "74": 176,
+          "75": 201,
+          "76": 52,
+          "77": 104,
+          "78": 173,
+          "79": 238,
+          "80": 135,
+          "81": 173,
+          "82": 155,
+          "83": 133,
+          "84": 4,
+          "85": 124,
+          "86": 61,
+          "87": 52,
+          "88": 178,
+          "89": 30,
+          "90": 200,
+          "91": 234,
+          "92": 87,
+          "93": 164,
+          "94": 136,
+          "95": 157,
+          "96": 238,
+          "97": 149,
+          "98": 4,
+          "99": 141,
+          "100": 100,
+          "101": 185,
+          "102": 93,
+          "103": 8,
+          "104": 147,
+          "105": 247,
+          "106": 73,
+          "107": 211,
+          "108": 245,
+          "109": 16,
+          "110": 133
+        }
+      ]
+    ],
+    "valid_until": null
+  },
+  "spending": {
+    "cached_total_spent": "70000000",
+    "period_ledgers": 17280,
+    "spending_history": [
+      {
+        "amount": "30000000",
+        "ledger_sequence": 5234597
+      },
+      {
+        "amount": "40000000",
+        "ledger_sequence": 5234599
+      }
+    ],
+    "spending_limit": "100000000"
+  }
+}
