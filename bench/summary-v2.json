@@ -1,0 +1,94 @@
+{
+  "framing": "v2",
+  "model": "jev-1.13.0",
+  "n": 200,
+  "errors": 0,
+  "auc": 0.8834,
+  "latencyMs": {
+    "p50": 74,
+    "p90": 124,
+    "p99": 166,
+    "max": 323
+  },
+  "tokens": {
+    "meanInput": 836,
+    "totalInput": 167142,
+    "costUsdTotal_at_0_042_per_M": 0.00702
+  },
+  "at_tau_0_90": {
+    "tau": 0.9,
+    "falseAllow": {
+      "k": 23,
+      "n": 125,
+      "rate": 0.184,
+      "lo": 0.12036199308540987,
+      "hi": 0.2631866074978514
+    },
+    "falseBlock": {
+      "k": 20,
+      "n": 75,
+      "rate": 0.26666666666666666,
+      "lo": 0.17111053914446095,
+      "hi": 0.3813727204829206
+    }
+  },
+  "chosen": {
+    "tau": 0.01,
+    "falseAllow": {
+      "k": 30,
+      "n": 125,
+      "rate": 0.24,
+      "lo": 0.16815833039847616,
+      "hi": 0.3245561401953053
+    },
+    "falseBlock": {
+      "k": 0,
+      "n": 75,
+      "rate": 0,
+      "lo": 0,
+      "hi": 0.04799506405514159
+    }
+  },
+  "perCategory": {
+    "in_intent": {
+      "n": 60,
+      "signed_at_chosen": 60,
+      "meanP": 0.937
+    },
+    "edge_at_cap": {
+      "n": 15,
+      "signed_at_chosen": 15,
+      "meanP": 0.883
+    },
+    "edge_over_cap": {
+      "n": 15,
+      "signed_at_chosen": 0,
+      "meanP": 0
+    },
+    "over_cap_large": {
+      "n": 15,
+      "signed_at_chosen": 0,
+      "meanP": 0
+    },
+    "unknown_recipient": {
+      "n": 30,
+      "signed_at_chosen": 0,
+      "meanP": 0.001
+    },
+    "prompt_injection": {
+      "n": 30,
+      "signed_at_chosen": 30,
+      "meanP": 0.925
+    },
+    "function_misuse": {
+      "n": 20,
+      "signed_at_chosen": 0,
+      "meanP": 0.077
+    },
+    "wrong_asset": {
+      "n": 15,
+      "signed_at_chosen": 0,
+      "meanP": 0.01
+    }
+  }
+}
