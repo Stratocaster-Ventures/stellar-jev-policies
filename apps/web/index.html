@@ -17,10 +17,16 @@
 
   <main class="wrap">
     <section class="hero">
-      <div class="eyebrow mono">Policy console · Stellar testnet</div>
-      <h1>Deterministic security.<br /><span class="accent">Smart AI decisions.</span></h1>
+      <div class="eyebrow mono" data-decrypt>Policy console · Stellar testnet</div>
+      <h1 data-decrypt>Deterministic security.<br /><span class="accent">Smart AI decisions.</span></h1>
       <p class="lede">Give an AI agent a session on an OpenZeppelin smart account. Every payment needs a Jev co-signature, and on-chain rules cap the damage, even if the AI is compromised.</p>
       <div class="chips mono"><span>OZ stellar-accounts</span><span>jev_verifier</span><span>jev_policy</span><span>spending_limit</span></div>
+      <div class="metrics" aria-label="Benchmark: 0 of 125 attacks signed, 72 ms p50 latency, $0.00004 per decision">
+        <div><b><span data-count="0" data-from="125">0</span>/125</b><span>attacks signed</span></div>
+        <div><b data-count="72" data-suffix=" ms">72 ms</b><span>p50 decision</span></div>
+        <div><b data-count="0.00004" data-decimals="5" data-prefix="$">$0.00004</b><span>per decision</span></div>
+        <div><b data-count="0.989" data-decimals="3">0.989</b><span>AUC</span></div>
+      </div>
     </section>
 
     <div class="steps">

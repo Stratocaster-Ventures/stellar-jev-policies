@@ -95,3 +95,6 @@ async function renderLog() {
 }
 const escape = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
 refresh(); renderLog(); setInterval(renderLog, 2000);
+import { decrypt, countUp, spotlight } from "./fx";
+document.querySelectorAll<HTMLElement>("[data-decrypt]").forEach((el) => decrypt(el));
+countUp(); spotlight(".panel");

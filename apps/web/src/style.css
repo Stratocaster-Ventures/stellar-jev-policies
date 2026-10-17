@@ -131,3 +131,14 @@ a { color: var(--brand); text-decoration: underline; text-decoration-color: rgba
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
 @media (max-width: 860px) { .wrap { padding: 0 24px; } .steps, .form, .form.three { grid-template-columns: 1fr; } .term-row { grid-template-columns: 1fr 1fr; } .term-cols { display: none; } }
+
+/* React Bits ports (src/fx.ts) */
+.spot { position: relative; isolation: isolate; }
+.spot::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .4s ease;
+  background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%), rgba(47, 93, 154, .09), transparent 60%); z-index: 0; }
+.spot:hover::after { opacity: 1; }
+.spot > * { position: relative; z-index: 1; }
+.metrics { display: flex; flex-wrap: wrap; gap: 28px; margin-top: 22px; }
+.metrics div { display: flex; flex-direction: column; gap: 2px; }
+.metrics b { font: 600 26px/1.1 "Geist Mono Variable", ui-monospace, monospace; color: #1e3a5f; font-variant-numeric: tabular-nums; }
+.metrics > div > span { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #a3460f; }
