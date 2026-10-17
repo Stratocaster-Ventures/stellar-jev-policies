@@ -1,7 +1,7 @@
 
 === init keys ===
 {
-  "state": "/workspace/stellar-jev-policies/packages/jev-policies/../../.jev/state.json",
+  "state": ".jev/state.json",
   "feePayer": "GCXKLENN4SU7HUIEMH5MZKLQWAYQGVGAM6B3EGXOLP26VRJCV3SJOYDK",
   "owner": "GDCLUSXZVSML4FSQIIAXH4YGRRVJWMC22SHOMN73XUPQCOUCRPNQJRN4",
   "agent": "GDQ7LQ5CZFV3JUQLDZPKD25UITTGBQ7G5APPBVHHY3LN4CUEOZEYSPSC",
