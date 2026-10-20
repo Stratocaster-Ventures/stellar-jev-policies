@@ -2,8 +2,8 @@
 
 > **Status: proof of concept.** This repository shows the core mechanism working end to end on
 > Stellar testnet. It is **not production software**: it hasn't been audited, the operator keys sit in a
-> local file, and the Jev integration is a thin client (now exercised against real Jev and calibrated, see `bench/`). The SCF Build Award proposal funds the
-> production version (see [What the grant turns into production](#what-the-grant-turns-into-production)).
+> local file, and the Jev integration is a thin client (now exercised against real Jev and calibrated, see `bench/`). The production roadmap is
+> below (see [Production roadmap](#production-roadmap)).
 
 **Deterministic security + smart AI decisions.** An AI agent gets a *session* on an
 OpenZeppelin smart account. Every agent transaction needs **two signatures in one transaction**:
@@ -22,7 +22,7 @@ agent ──tx──▶ __check_auth ──▶ jev_verifier.verify  (Jev decisio
 \* The web UI uses a real passkey owner (secp256r1 via the OZ WebAuthn verifier). The CLI demo still uses an ed25519 owner key for scripting.
 
 
-**Repository:** https://github.com/Stratocaster-Ventures/stellar-jev-policies (Stratocaster Ventures SA de CV; private until submission).
+**Repository:** https://github.com/Stratocaster-Ventures/stellar-jev-policies (Stratocaster Ventures SA de CV).
 
 ## Architecture and spec docs
 
@@ -118,7 +118,7 @@ The agent calls an x402 v2 resource server (`PAYMENT-REQUIRED` / `PAYMENT-SIGNAT
 | injection in the API's description | ⛔ Jev deny (0.01) |
 | unknown payee + **compromised operator** | ⛔ `jev_policy #4207` in simulation |
 
-**Independently reproduced (already public upstream):** a payment from a Jev-guarded OZ smart account needs a resource fee of about **310k stroops** (account with existing spend history) to **5.73M stroops** (first payment, new persistent entries). That is over the facilitator's fee ceiling (`@x402/stellar` default `maxTransactionFeeStroops` = 50,000; tracked in [x402#3515](https://github.com/x402-foundation/x402/issues/3515)). Separately, reference and OZ facilitators reject any non-`transfer` contract event ([x402#3352](https://github.com/x402-foundation/x402/issues/3352), [PR #3399](https://github.com/x402-foundation/x402/pull/3399), [OZ #53](https://github.com/OpenZeppelin/relayer-plugin-x402-facilitator/issues/53)), so OZ `spending_limit` / `simple_threshold` (and `jev_policy`) audit events fail verify. Settlement through the hosted facilitator therefore needs (a) a higher ceiling / smart-account fee profile and (b) policy-aware event filtering (and/or cheaper `__check_auth`). Contributing measurement data and fix testing upstream is a funded grant deliverable.
+**Independently reproduced (already public upstream):** a payment from a Jev-guarded OZ smart account needs a resource fee of about **310k stroops** (account with existing spend history) to **5.73M stroops** (first payment, new persistent entries). That is over the facilitator's fee ceiling (`@x402/stellar` default `maxTransactionFeeStroops` = 50,000; tracked in [x402#3515](https://github.com/x402-foundation/x402/issues/3515)). Separately, reference and OZ facilitators reject any non-`transfer` contract event ([x402#3352](https://github.com/x402-foundation/x402/issues/3352), [PR #3399](https://github.com/x402-foundation/x402/pull/3399), [OZ #53](https://github.com/OpenZeppelin/relayer-plugin-x402-facilitator/issues/53)), so OZ `spending_limit` / `simple_threshold` (and `jev_policy`) audit events fail verify. Settlement through the hosted facilitator therefore needs (a) a higher ceiling / smart-account fee profile and (b) policy-aware event filtering (and/or cheaper `__check_auth`). We are contributing measurement data and fix testing upstream.
 
 **Update: settled through a self-hosted facilitator (testnet).** We independently reproduced the upstream issues on a Jev-guarded OZ smart account and settled via a self-hosted facilitator. `packages/jev-policies/scripts/x402-settle-demo.mjs` runs the x402 Foundation reference facilitator (`@x402/stellar` 2.28.0) in-process with a **500,000-stroop fee ceiling** and an allowlist for non-balance audit events from listed policy contracts. The account pre-pays its one-off TTL rent (`ExtendFootprintTTL`), so the warm payment costs ~319k stroops. Result: 0.1 XLM from the Jev-guarded smart account to the approved vendor, Jev allow 0.95, settled in tx [`50466d23…fe4477`](https://stellar.expert/explorer/testnet/tx/50466d2340bf501924420c242ac4d19f5f4d04bce24cae965a9bac60fcfe4477) (Horizon-verified, 275,080 stroops charged to the facilitator). The hosted OZ facilitator still refuses these payments. Details: [`docs/architecture/x402-settlement.md`](docs/architecture/x402-settlement.md), record: `deployments/testnet-x402-settled.json`.
 
@@ -144,10 +144,10 @@ The agent calls an x402 v2 resource server (`PAYMENT-REQUIRED` / `PAYMENT-SIGNAT
 - No `arg_bounds` extractors for Blend/Soroswap. Only SEP-41 transfer/approve rules are covered.
 - All POC keys, including the operator key, live in `.jev/` (gitignored). There is no TEE/KMS.
 - The benchmark is 200 + 200 template-generated cases. It is not the ≥1,200-case red-team set.
-- x402 settles on testnet only through our self-hosted facilitator (tx `50466d23…fe4477`). The hosted OZ facilitator still refuses (50k-stroop fee ceiling and rejection of non-`transfer` policy events; public upstream: [#3352](https://github.com/x402-foundation/x402/issues/3352), [#3515](https://github.com/x402-foundation/x402/issues/3515), [PR #3399](https://github.com/x402-foundation/x402/pull/3399)). Contributing data and fix testing upstream is a grant deliverable.
+- x402 settles on testnet only through our self-hosted facilitator (tx `50466d23…fe4477`). The hosted OZ facilitator still refuses (50k-stroop fee ceiling and rejection of non-`transfer` policy events; public upstream: [#3352](https://github.com/x402-foundation/x402/issues/3352), [#3515](https://github.com/x402-foundation/x402/issues/3515), [PR #3399](https://github.com/x402-foundation/x402/pull/3399)). We are contributing data and fix testing upstream.
 - No escalation-to-passkey flow, `decision_verifier`, or tracing backend.
 
-## What the grant turns into production
+## Production roadmap
 
 BYOK (teams bring their own Jev or model key), end-to-end tracing (from a transaction back to the decision, with inputs, score and latency),
 OpenRouter / second-model-family routing, an operator registry with rotation, Nitro TEE operators with attestation,
