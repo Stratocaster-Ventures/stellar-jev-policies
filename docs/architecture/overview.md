@@ -67,7 +67,7 @@ flowchart LR
 
 ## Stack
 
-Rust smart contracts on soroban-sdk 28.0.0, OpenZeppelin stellar-contracts pinned at commit `33b665b` (release 0.7.2 targets sdk 26). TypeScript package (`packages/jev-policies`, stellar-sdk 17.2.1) for the CLI, operator HTTP service and passkey flow. Static web console in `apps/web` (`npm start`, port 4317). Benchmark harness in `bench/` (Node).
+Rust smart contracts on soroban-sdk 28.0.0, OpenZeppelin stellar-contracts pinned at commit `8e25220` on main, which carries the v0.7.3 security fix (the v0.7.3 tag itself targets sdk 26.1). TypeScript package (`packages/jev-policies`, stellar-sdk 17.2.1) for the CLI, operator HTTP service and passkey flow. Static web console in `apps/web` (`npm start`, port 4317). Benchmark harness in `bench/` (Node).
 
 ## Alternatives considered
 

@@ -1813,7 +1813,7 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 [[package]]
 name = "stellar-accounts"
 version = "0.7.1"
-source = "git+https://github.com/OpenZeppelin/stellar-contracts?rev=33b665b#33b665bccb4f38c54f1bb3c5700d950b76e32e0b"
+source = "git+https://github.com/OpenZeppelin/stellar-contracts?rev=8e25220#8e2522065e9bdff639d0532eac03e374af8723f4"
 dependencies = [
  "serde",
  "serde-json-core",
