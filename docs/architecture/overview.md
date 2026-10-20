@@ -2,7 +2,7 @@
 
 ## Summary
 
-Agentic payments are coming, and Stellar already supports them (x402 and MPP are live on mainnet). They need to be safe. Stellar JEV Policies lets a user give an AI agent a **session** on an OpenZeppelin smart account. Every agent transaction needs two signatures in the same transaction: the agent's key, and a **Jev operator** that asked TypeSafe's Jev model whether the transaction fits the intent the user signed when granting the session. Deterministic on-chain rules (spending limit, allowlist, per-token caps) bound the loss even if the AI and the operator are fully compromised.
+Agentic payments are coming, and Stellar already supports them (x402 and MPP are live on Stellar mainnet per SDF's [2026-04-16 developer meeting notes](https://developers.stellar.org/meetings/2026/04/16); see [x402 on Stellar](https://stellar.org/blog/foundation-news/x402-on-stellar) and [MPP on Stellar](https://developers.stellar.org/docs/build/agentic-payments/mpp)). They need to be safe. Stellar JEV Policies lets a user give an AI agent a **session** on an OpenZeppelin smart account. Every agent transaction needs two signatures in the same transaction: the agent's key, and a **Jev operator** that asked TypeSafe's Jev model whether the transaction fits the intent the user signed when granting the session. Deterministic on-chain rules (spending limit, allowlist, per-token caps) bound the loss even if the AI and the operator are fully compromised.
 
 Core principle: **AI can only restrict, never expand.** A Jev "allow" is necessary but never sufficient.
 
