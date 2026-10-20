@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 publish = false
-description = "Vendored from OpenZeppelin stellar-contracts@33b665b examples/multisig-smart-account/ed25519-verifier (MIT)"
+description = "Vendored from OpenZeppelin stellar-contracts@8e25220 examples/multisig-smart-account/ed25519-verifier (MIT)"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
