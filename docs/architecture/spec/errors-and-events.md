@@ -30,11 +30,11 @@ A vetoed or stale decision is not an error: `verify` returns false and OZ reject
 
 | Scenario | Code | Origin |
 |---|---|---|
-| Jev veto | 3003 | OZ smart account [TODO: confirm exact OZ error name at `33b665b`] |
+| Jev veto | 3003 | OZ smart account (open item: confirm exact OZ error name at `33b665b`) |
 | Recipient not allowed | 4207 | jev_policy |
 | Per-call cap | 4206 | jev_policy |
-| Spending window exceeded | 3221 | OZ spending_limit [TODO: confirm name] |
+| Spending window exceeded | 3221 | OZ spending_limit (open item: confirm name) |
 
 ## Events
 
-`JevPolicyEnforced { #[topic] smart_account: Address, context_rule_id: u32, contract: Address, fn_name: Symbol }`, emitted by `jev_policy.enforce` on success. The verifier emits no events. Grant: add a decision event (decision id, verdict, model, operator epoch) to link on-chain decisions to traces.
+`JevPolicyEnforced { #[topic] smart_account: Address, context_rule_id: u32, contract: Address, fn_name: Symbol }`, emitted by `jev_policy.enforce` on success. The verifier emits no events. Roadmap: add a decision event (decision id, verdict, model, operator epoch) to link on-chain decisions to traces.

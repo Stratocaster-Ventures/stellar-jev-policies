@@ -27,4 +27,4 @@ Findings:
 - Amount, recipient, asset and function violations are also enforced on-chain by jev_policy/spending_limit. Jev's distinctive job is the purpose/injection check, where v4 signed 0/60 across the two sets.
 - Cost: ~940 input tokens per decision, about $0.00004 each at $0.042/M input tokens.
 
-Caveats: the held-out set reuses the same text templates with new recipients, amounts and pairings, so it is not adversarially novel. Runs vary between calls (v1 was re-run with a few cases shifting). The 1,200-case benchmark in the proposal should add novel, red-team-written injections.
+Caveats: the held-out set reuses the same text templates with new recipients, amounts and pairings, so it is not adversarially novel. Runs vary between calls (v1 was re-run with a few cases shifting). The planned 1,200-case benchmark (JEV-Policy-Bench v1) will add novel, red-team-written injections.

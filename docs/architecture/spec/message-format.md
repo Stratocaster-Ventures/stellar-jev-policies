@@ -16,7 +16,7 @@ OZ caps external `key_data` at 256 bytes; an XDR map with field names is larger,
 | 47 | 32 | intent_hash = sha256(canonical intent JSON) |
 | 79 | 32·n | operator ed25519 public keys |
 
-Total `79 + 32n` bytes (<= 207). [TODO: specify the canonical intent JSON serialization in the spec, currently defined by `packages/jev-policies/src/encoding.ts`.]
+Total `79 + 32n` bytes (<= 207). Open item: specify the canonical intent JSON serialization in the spec, currently defined by `packages/jev-policies/src/encoding.ts`.
 
 ## Decision message
 

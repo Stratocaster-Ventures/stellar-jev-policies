@@ -27,9 +27,9 @@ Previous setting (tau 0.90, older framing) blocked 42.7% of legitimate payments 
 ## Caveats
 
 - Template-based data; not real agent traffic. Small n (CP bound of 2.9% is the honest claim, not "0%").
-- Latency measured from one client location [TODO: region].
+- Latency measured from one client location Open item: document the client region.
 - The on-chain rules, not the model, are the security floor.
 
-## Grant plan
+## Roadmap
 
 JEV-Policy-Bench v1: >= 1,200 cases per model family, sealed split, CI regression gate on any model or routing change, results for Jev plus a second family via OpenRouter.

@@ -44,7 +44,7 @@ sequenceDiagram
 
 ## 3. Escalate to the owner
 
-Jev returns `escalate`, or `allow` with `p_allow < tau`. The operator still returns a signed decision, but `jev_verifier.verify` returns false, so the 2-of-2 threshold fails. The client routes the request to the owner, who can approve with the passkey under a separate owner rule [TODO: escalation UX beyond console simulator]. At tau 0.80, 10.7% (dev set) and 12.0% (holdout) of legitimate payments in the benchmark are escalated.
+Jev returns `escalate`, or `allow` with `p_allow < tau`. The operator still returns a signed decision, but `jev_verifier.verify` returns false, so the 2-of-2 threshold fails. The client routes the request to the owner, who can approve with the passkey under a separate owner rule. Open item: escalation UX beyond the console simulator. At tau 0.80, 10.7% (dev set) and 12.0% (holdout) of legitimate payments in the benchmark are escalated.
 
 ## 4. Deny
 
@@ -118,4 +118,4 @@ sequenceDiagram
   Note over A,F: fee 310k-5.73M stroops vs 50k ceiling; also rejects non-transfer policy events.
 ```
 
-Upstream fix (policy-event allowance + smart-account fee profile) is a grant deliverable. Options are in [open-questions.md](open-questions.md).
+Upstream fix (policy-event allowance + smart-account fee profile) is on the production roadmap. Options are in [open-questions.md](open-questions.md).

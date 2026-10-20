@@ -1,6 +1,6 @@
 # Threat model
 
-Scope: POC contracts at the commit in `deployments/testnet.json` (OZ `33b665b`, soroban-sdk 28.0.0), operator service, web console. Not audited. The SCF #46 proposal's full threat model is published with the submission [TODO: GitBook URL at submission].
+Scope: POC contracts at the commit in `deployments/testnet.json` (OZ `33b665b`, soroban-sdk 28.0.0), operator service, web console. Not audited.
 
 ## Trust assumptions
 
@@ -21,7 +21,7 @@ Scope: POC contracts at the commit in `deployments/testnet.json` (OZ `33b665b`, 
 - I6. Only the account's own auth (owner rule) can install, change or uninstall policies.
 - I7. Any malformed key, decision or signature fails closed.
 
-[TODO] Map each invariant to named tests and add property/fuzz tests (Grant, T1).
+Open item: map each invariant to named tests and add property/fuzz tests (Roadmap).
 
 ## STRIDE
 
@@ -29,10 +29,10 @@ Scope: POC contracts at the commit in `deployments/testnet.json` (OZ `33b665b`, 
 |---|---|---|---|
 | Spoofing | Forged Jev decision | ed25519 k-of-n over auth digest (V7) | Operator key theft (see compromised-operator flow) |
 | Tampering | Change amount/recipient after Jev approves | Decision signs the exact `auth_digest` | none known |
-| Tampering | Swap model to a weaker one | `model_id` pinned in key (V5); operator rejects mismatched model [Grant] | Provider mislabelling responses [TODO] |
-| Repudiation | Operator denies signing | Signatures on-chain; `JevPolicyEnforced` event | No decision event yet (Grant) |
-| Info disclosure | Intent and tx details sent to Jev API | Minimal tx summary; only hashes on-chain | Third-party API sees payment metadata; Grant: redaction, BYOK |
-| DoS | Jev/operator down | Fails closed; owner passkey still works | Liveness depends on operator (SLO in Grant) |
+| Tampering | Swap model to a weaker one | `model_id` pinned in key (V5); operator rejects mismatched model (Roadmap) | Provider mislabelling responses (open item) |
+| Repudiation | Operator denies signing | Signatures on-chain; `JevPolicyEnforced` event | No decision event yet (Roadmap) |
+| Info disclosure | Intent and tx details sent to Jev API | Minimal tx summary; only hashes on-chain | Third-party API sees payment metadata; Roadmap: redaction, BYOK |
+| DoS | Jev/operator down | Fails closed; owner passkey still works | Liveness depends on operator (SLO on roadmap) |
 | DoS | Owner removes spending_limit by mistake | Session stops (I5) | Intended |
 | Elevation | Prompt injection makes Jev allow | Jev can only restrict; I3–I5 bound loss; 0/125 attacks signed in bench | Model error on in-allowlist, in-cap payments |
 | Elevation | Replay an old allow | Freshness window + digest binding | none known |
