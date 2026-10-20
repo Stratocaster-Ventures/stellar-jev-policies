@@ -31,7 +31,7 @@ agent ──tx──▶ __check_auth ──▶ jev_verifier.verify  (Jev decisio
 
 ## Architecture and spec docs
 
-See [docs/architecture/](docs/architecture/README.md) (overview, components, flows, normative spec, threat model, calibration, production roadmap, open questions) and the [research spike](docs/research/how-projects-present-architecture.md) on how other projects present architecture.
+See [docs/architecture/](docs/architecture/README.md) (overview, components, flows, normative spec, threat model, calibration, production roadmap, open questions).
 
 ## What's here
 

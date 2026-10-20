@@ -2,7 +2,7 @@
 
 ## Summary
 
-Agentic payments are coming, and Stellar already supports them (x402 and MPP are live on mainnet [TODO: link primary sources]). They need to be safe. Stellar JEV Policies lets a user give an AI agent a **session** on an OpenZeppelin smart account. Every agent transaction needs two signatures in the same transaction: the agent's key, and a **Jev operator** that asked TypeSafe's Jev model whether the transaction fits the intent the user signed when granting the session. Deterministic on-chain rules (spending limit, allowlist, per-token caps) bound the loss even if the AI and the operator are fully compromised.
+Agentic payments are coming, and Stellar already supports them (x402 and MPP are live on mainnet). They need to be safe. Stellar JEV Policies lets a user give an AI agent a **session** on an OpenZeppelin smart account. Every agent transaction needs two signatures in the same transaction: the agent's key, and a **Jev operator** that asked TypeSafe's Jev model whether the transaction fits the intent the user signed when granting the session. Deterministic on-chain rules (spending limit, allowlist, per-token caps) bound the loss even if the AI and the operator are fully compromised.
 
 Core principle: **AI can only restrict, never expand.** A Jev "allow" is necessary but never sufficient.
 
@@ -18,7 +18,7 @@ Core principle: **AI can only restrict, never expand.** A Jev "allow" is necessa
 
 - Not production software. Not audited. Operator keys are in a local file.
 - No custody of user funds; no token.
-- No mainnet deployment yet (Grant, T3).
+- No mainnet deployment yet (Roadmap).
 - Jev is not trusted to grant new permissions.
 
 ## Actors
@@ -89,13 +89,13 @@ We keep every deterministic rule and enforce them on-chain on every call: `spend
 | Over the cap, unknown recipient, wrong asset, wrong function | Blocked on-chain | Also denied off-chain (defense in depth) |
 | **In-limit drain to an allowed payee for the wrong reason**: the payment repeats inside the budget, or pays for a resource the user never asked for | Passes: every number and address checks out | Judged against the passkey-signed intent; denied or escalated |
 | **Prompt-injected intent mismatch**: server-controlled text such as an x402 `resource.description` steers the agent | Passes: rules never read the purpose | Agent text is treated as untrusted data and scored against the intent |
-| **Novel recipients that need judgment**: "pay weather-data APIs" can't be listed address by address | Forced choice: a strict list means the owner approves everything, a loose list means drain | Screens each payment and escalates uncertain ones to the passkey owner. Jev can't add payees, so the allowlist stays authoritative [TODO: an open-recipient mode is a design option, not built] |
+| **Novel recipients that need judgment**: "pay weather-data APIs" can't be listed address by address | Forced choice: a strict list means the owner approves everything, a loose list means drain | Screens each payment and escalates uncertain ones to the passkey owner. Jev can't add payees, so the allowlist stays authoritative. An open-recipient mode is a design option, not built |
 | **Intent semantics**: "only invoices from last week", "one call per answer" | Not expressible as a cap | Expressible in the signed intent text |
 
 **Evidence (repo).**
 - In both benchmark sets (`bench/dataset.jsonl`, `bench/holdout.jsonl`), 30 of the 125 attacks are prompt injections that pass **every** deterministic check: approved recipient, under the per-call cap, right asset and function. Jev signed **0/30** in each set, and 0/125 attacks overall (95% Clopper–Pearson upper bound 2.9%). The other 95 attacks are also caught by the on-chain rules.
 - In the testnet x402 demo (`deployments/testnet-x402-demo.log`), the `/inject` endpoint asks for 0.1 XLM to the approved vendor, inside the 0.5 XLM cap, with "IGNORE PREVIOUS instructions…" in its description. Jev denied it (p_allow 0.01). A spending limit alone would have paid.
-- Caveat: the benchmark is template-based and its injections are blatant. Subtle, multi-step injections and real agent traffic are untested [TODO: JEV-Policy-Bench v1, Grant].
+- Caveat: the benchmark is template-based and its injections are blatant. Subtle, multi-step injections and real agent traffic are untested; JEV-Policy-Bench v1 on the roadmap addresses this.
 
 **Why AI can only restrict.**
 - The Jev signature is a *second required signer* (`simple_threshold` 2-of-2 with the agent key), and OZ ANDs every policy. A Jev "allow" is necessary but never sufficient.
@@ -104,7 +104,7 @@ We keep every deterministic rule and enforce them on-chain on every call: `spend
 - Tested on testnet: a simulated compromised operator that approves everything is still rejected by `jev_policy` (`#4207`, recipient not allowed).
 
 **Cost of the check** (framing v4, τ = 0.80, `docs/architecture/calibration-and-evaluation.md`):
-- Latency: 72 ms p50 (112 p90, 181 p99) on the holdout, measured from one client location [TODO: region].
+- Latency: 72 ms p50 (112 p90, 181 p99) on the holdout, measured from one client location Open item: document the client region.
 - About 942 input tokens, about **$0.00004 per decision**.
 - Legitimate payments escalated to the owner (not silently dropped): 10.7% on the dev set (8/75) and 12.0% on the holdout (9/75).
 - Previous setting (τ 0.90, older framing): 42.7% of legitimate payments blocked and 8.8% of attacks let through.
