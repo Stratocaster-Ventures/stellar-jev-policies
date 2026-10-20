@@ -8,10 +8,13 @@ Delivery by Stratocaster Ventures, led by Jose Carlos Toscano. Milestones: MVP, 
 | Operator | Single operator, local key | k-of-n operator set, KMS keys, **BYOK** (team-supplied Jev/model keys, encrypted, per-key caps, never logged) |
 | Observability | Console logs | **OpenTelemetry** trace per decision (prefilters, model calls, sign, submit) linked to tx hash; OTLP export; public decision explorer |
 | Models | Jev only | Jev primary + **second model family via OpenRouter** (pinned provider and slug, no silent fallback; unavailable model = escalate or fail closed) |
-| Evaluation | 200-case template bench | JEV-Policy-Bench v1, >= 1,200 cases per family, CI gate |
+| Evaluation | 400-case template bench (200 tuning + 200 holdout), published as a dataset in `bench/dataset/` | JEV-Policy-Bench v1, >= 1,200 cases per family, CI gate |
 | Security | Not audited | **Audit** (independent audit) with no open high/critical before mainnet; incident runbook; key-revocation drill |
 | Reliability | none | **SLOs**: decision availability >= 99.5%/month; p95 latency <= 2 s single-family, <= 4 s quorum (to be confirmed against the benchmark); 100% trace coverage |
 | Payments | x402 settles on testnet via self-hosted `@x402/stellar` facilitator (tx `50466d23…fe4477`); OZ hosted facilitator refuses (public: [#3352](https://github.com/x402-foundation/x402/issues/3352), [#3515](https://github.com/x402-foundation/x402/issues/3515), [PR #3399](https://github.com/x402-foundation/x402/pull/3399)) | Contribute data/fix testing upstream; cheaper `__check_auth`; MPP integration (scope open) |
+| Compliance | none | **Sanctions screen**: deterministic OFAC SDN check on recipient addresses in the operator, before Jev is queried; list version recorded in the trace; match = deny |
+| Developer access | CLI and demo scripts | **Public "check a transaction" playground**: paste an intent and an action, see Jev's allow/deny with reasons (testnet, rate-limited, no signing) |
+| Decision inputs | Intent, decoded action, purpose, verified facts | **Seller/endpoint trust signals** as additional inputs: recipient trustline, token contract identity, endpoint uptime history (future; deterministic layer stays authoritative) |
 | Network | Testnet | **Mainnet** deployment, SDK, docs, published metrics |
 
 Each deliverable ships with a verification method (contract ID, tx hash, CI run, public dashboard).

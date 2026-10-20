@@ -158,7 +158,9 @@ The agent calls an x402 v2 resource server (`PAYMENT-REQUIRED` / `PAYMENT-SIGNAT
 BYOK (teams bring their own Jev or model key), end-to-end tracing (from a transaction back to the decision, with inputs, score and latency),
 OpenRouter / second-model-family routing, an operator registry with rotation, Nitro TEE operators with attestation,
 the hardened passkey web UI, x402 facilitator compatibility (fee-optimized `__check_auth`), JEV-Policy-Bench (≥1,200 cases, Clopper-Pearson bounds) for calibrated τ,
-policy templates for DeFi, an audit, and versioned upgrades.
+policy templates for DeFi, an audit, and versioned upgrades. Also planned: a deterministic OFAC SDN sanctions screen on recipient addresses in the operator (before Jev is queried),
+a public "check a transaction" playground (paste an intent and an action, see Jev's allow/deny with reasons), and seller/endpoint trust signals
+(trustline, token contract, uptime history) as future decision inputs. The 400-case calibration benchmark is published as a dataset in [`bench/dataset/`](bench/dataset/README.md).
 
 ## License
 
