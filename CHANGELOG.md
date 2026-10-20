@@ -8,7 +8,9 @@
 - No changes required in `jev_verifier`, `jev_policy` or the vendored `oz_*` examples (identical between the two commits). Our accounts do not use `Delegated` signers.
 
 ### Deployments
-- Testnet contracts in `deployments/testnet.json` remain the ones built at `33b665b`. Redeploying the smart account against `8e25220` is a follow-up.
+- Redeployed all testnet contracts built at `8e25220` (2026-10-20): `jev_verifier` `CCSXNARWVDXYOXTFZG5FPWX6JQNIET3CV4BJQNBG5BJZDZEGTXSOB32W`, `jev_policy` `CA6L6G2O3ZDT4T3HBM3RIGDZBO54NIQ3MWOSYGIKCZ76WLL6YNS2PQBQ`, plus fresh OZ `ed25519_verifier`, `simple_threshold`, `spending_limit` and a new `oz_smart_account` wasm hash. Deploy tx hashes are under `deployTxs_2026_10_20` in `deployments/testnet.json`.
+- Re-ran the 8-scenario demo against real Jev (`jev-1.13.0`, τ 0.80) on the new deployment: same outcomes as before (2 allows settled, 6 denials). Log: `deployments/testnet-demo-real-jev-8e25220.log`.
+- Previous deployment (built at `33b665b`) kept under `previous_deployment` in `deployments/testnet.json`; the passkey and x402 records still reference it.
 
 ## v0.1.0
 See [RELEASE_NOTES_v0.1.0.md](RELEASE_NOTES_v0.1.0.md).

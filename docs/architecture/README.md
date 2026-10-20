@@ -18,7 +18,7 @@ Reading order:
 9. [x402-settlement.md](x402-settlement.md): x402 payment settled via a self-hosted facilitator (testnet)
 
 
-Evidence: contract IDs and tx hashes in [`deployments/testnet.json`](../../deployments/testnet.json); benchmark data in [`bench/`](../../bench/).
+Evidence: contract IDs and tx hashes in [`deployments/testnet.json`](../../deployments/testnet.json) (current deployment built at OZ `8e25220`, redeployed 2026-10-20; the earlier `33b665b` deployment is kept as `previous_deployment`); benchmark data in [`bench/`](../../bench/).
 
 ## References
 
@@ -30,7 +30,7 @@ Links verified 2026-10-20.
 - [Stellar docs: Smart wallets](https://developers.stellar.org/docs/build/apps/smart-wallets): contract accounts with passkey and other signer checks.
 
 **OpenZeppelin Stellar contracts**
-- [OpenZeppelin/stellar-contracts](https://github.com/OpenZeppelin/stellar-contracts): pinned here at commit [`8e25220`](https://github.com/OpenZeppelin/stellar-contracts/commit/8e2522065e9bdff639d0532eac03e374af8723f4) on `main` (soroban-sdk 28), which includes the accounts security fix shipped in [v0.7.3](https://github.com/OpenZeppelin/stellar-contracts/releases/tag/v0.7.3) (2026-10-20): delegated signers that are the contract of an authorized context are rejected (`SmartAccountError::DelegatedSignerCycle`, 3017). The v0.7.3 tag itself is cut from `release-v0.7.3` on soroban-sdk 26.1, so it cannot be used with sdk 28 directly.
+- [OpenZeppelin/stellar-contracts](https://github.com/OpenZeppelin/stellar-contracts): pinned here at commit [`8e25220`](https://github.com/OpenZeppelin/stellar-contracts/commit/8e2522065e9bdff639d0532eac03e374af8723f4) on `main` (soroban-sdk 28), with testnet contracts redeployed from it on 2026-10-20 (`jev_verifier` [`CCSXNARW…OB32W`](https://stellar.expert/explorer/testnet/contract/CCSXNARWVDXYOXTFZG5FPWX6JQNIET3CV4BJQNBG5BJZDZEGTXSOB32W), `jev_policy` [`CA6L6G2O…S2PQBQ`](https://stellar.expert/explorer/testnet/contract/CA6L6G2O3ZDT4T3HBM3RIGDZBO54NIQ3MWOSYGIKCZ76WLL6YNS2PQBQ)). It includes the accounts security fix shipped in [v0.7.3](https://github.com/OpenZeppelin/stellar-contracts/releases/tag/v0.7.3) (2026-10-20): delegated signers that are the contract of an authorized context are rejected (`SmartAccountError::DelegatedSignerCycle`, 3017). The v0.7.3 tag itself is cut from `release-v0.7.3` on soroban-sdk 26.1, so it cannot be used with sdk 28 directly.
 - [OZ docs: Smart Accounts](https://docs.openzeppelin.com/stellar-contracts/accounts/smart-account): context rules, signers (including `External` verifiers) and policies.
 - [stellar/smart-account-kit](https://github.com/stellar/smart-account-kit): TypeScript SDK for passkey smart accounts. The roadmap uses it for passkey owners.
 - [OpenZeppelin Relayer](https://docs.openzeppelin.com/relayer): includes Stellar gasless and sponsored transactions. The roadmap uses it for fee sponsorship.
