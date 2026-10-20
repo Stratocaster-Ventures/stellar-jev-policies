@@ -1,5 +1,10 @@
 # Stellar JEV Policies — POC / MVP
 
+[![Watch the 2-minute demo](docs/assets/demo-thumbnail.png)](https://youtu.be/WjUpzcE6bt4)
+
+▶️ **[Watch the 2-minute demo on YouTube](https://youtu.be/WjUpzcE6bt4)**
+
+
 > **Status: proof of concept.** This repository shows the core mechanism working end to end on
 > Stellar testnet. It is **not production software**: it hasn't been audited, the operator keys sit in a
 > local file, and the Jev integration is a thin client (now exercised against real Jev and calibrated, see `bench/`). The production roadmap is
