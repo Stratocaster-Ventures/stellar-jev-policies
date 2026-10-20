@@ -78,20 +78,33 @@ Jev: set `JEV_API_KEY` to call `POST https://api.typesafe.ai/v1/systemone` with 
 (allow / deny / escalate), and `p_allow = probabilities.allow`. Without a key, a **deterministic mock**
 is used. The mock is not a security model; it only exists so the demo runs without credentials.
 
-## Demo results (testnet, real Jev `jev-1.13.0`, framing v4, τ = 0.80, 2026-10-16)
+## Testnet deployment (OZ `stellar-contracts` 8e25220, redeployed 2026-10-20)
+
+| Contract | ID |
+|---|---|
+| `jev_verifier` | [`CCSXNARWVDXYOXTFZG5FPWX6JQNIET3CV4BJQNBG5BJZDZEGTXSOB32W`](https://stellar.expert/explorer/testnet/contract/CCSXNARWVDXYOXTFZG5FPWX6JQNIET3CV4BJQNBG5BJZDZEGTXSOB32W) |
+| `jev_policy` | [`CA6L6G2O3ZDT4T3HBM3RIGDZBO54NIQ3MWOSYGIKCZ76WLL6YNS2PQBQ`](https://stellar.expert/explorer/testnet/contract/CA6L6G2O3ZDT4T3HBM3RIGDZBO54NIQ3MWOSYGIKCZ76WLL6YNS2PQBQ) |
+| OZ `ed25519_verifier` | [`CBDOJI755Y7EE2IN7VMNGIFDSAXCCKLONMGLJ6SXXETNHKW3FQCB45I2`](https://stellar.expert/explorer/testnet/contract/CBDOJI755Y7EE2IN7VMNGIFDSAXCCKLONMGLJ6SXXETNHKW3FQCB45I2) |
+| OZ `simple_threshold` | [`CD7DECTT2DMVZP5M3VYI4Y5F4DLJB2NYEL54SW2PSAZNWRBFFILSPBBF`](https://stellar.expert/explorer/testnet/contract/CD7DECTT2DMVZP5M3VYI4Y5F4DLJB2NYEL54SW2PSAZNWRBFFILSPBBF) |
+| OZ `spending_limit` | [`CAEXTTDUEQGIYHDDLMI6TKN6N27QNK5UOWMAV62IAYF456AK6V5YFNSZ`](https://stellar.expert/explorer/testnet/contract/CAEXTTDUEQGIYHDDLMI6TKN6N27QNK5UOWMAV62IAYF456AK6V5YFNSZ) |
+| Demo smart account | [`CBY7NPB2CZ6KARX67NDH2YHN7WKR5E7MMCDV4SSWJKTCA3GULDG7EWM3`](https://stellar.expert/explorer/testnet/contract/CBY7NPB2CZ6KARX67NDH2YHN7WKR5E7MMCDV4SSWJKTCA3GULDG7EWM3) |
+
+Previous deployment (built at `33b665b`, 2026-10-16): `jev_verifier` `CAPPEWGO…CS3S7`, `jev_policy` `CDLFJR3P…SDT6W`. The passkey and x402 records below ran against that deployment; full IDs are under `previous_deployment` in `deployments/testnet.json`.
+
+## Demo results (testnet, real Jev `jev-1.13.0`, framing v4, τ = 0.80, 2026-10-20, contracts at 8e25220)
 
 | # | Scenario | Result | p(allow) | Jev latency |
 |---|---|---|---|---|
-| 1 | In-intent invoice, 3 XLM | ✅ settled on testnet (direct submission, tx `e25fa712…d625`) | 0.96 | 116 ms |
-| 2 | Unknown recipient | ⛔ operator refuses to co-sign (Jev deny) | 0.01 | 195 ms |
+| 1 | In-intent invoice, 3 XLM | ✅ settled on testnet (direct submission, tx [`7583fa6a…0dc096`](https://stellar.expert/explorer/testnet/tx/7583fa6a3a630a639a2e4c2f5567c5f107ecb2618a9575054b6738e3f30dc096)) | 0.98 | 84 ms |
+| 2 | Unknown recipient | ⛔ operator refuses to co-sign (Jev deny) | 0.00 | 142 ms |
 | 3 | Jev *deny* forced into the tx | ⛔ on-chain `jev_verifier` veto `#3003` | | |
-| 4 | Prompt injection in claimed purpose | ⛔ operator refuses (Jev deny) | 0.02 | 133 ms |
+| 4 | Prompt injection in claimed purpose | ⛔ operator refuses (Jev deny) | 0.01 | 86 ms |
 | 5 | **Compromised operator** allows an unknown recipient | ⛔ `jev_policy` `#4207 RecipientNotAllowed` | | |
 | 6 | **Compromised operator** allows 6 XLM (cap 5) | ⛔ `jev_policy` `#4206 AmountExceedsTokenRule` | | |
-| 7 | Second invoice, 4 XLM (window 7/10) | ✅ settled on testnet (direct submission, tx `88eb8ad9…52b5`) | 0.99 | 137 ms |
+| 7 | Second invoice, 4 XLM (window 7/10) | ✅ settled on testnet (direct submission, tx [`2f97c820…6d9077`](https://stellar.expert/explorer/testnet/tx/2f97c8204b5a5e1cdcf60e236871eff40afca6f170d922b012021390056d9077)) | 0.98 | 86 ms |
 | 8 | 4 XLM more (would be 11/10) | ⛔ OZ `spending_limit` `#3221` | | |
 
-Full hashes are in `deployments/testnet.json` (`demo_real_jev_v4`) and every one was checked as successful on Horizon testnet. "Settled" here means the transaction was submitted directly to Soroban testnet RPC; x402 facilitator settlement is shown separately below (self-hosted facilitator, testnet).
+Full hashes are in `deployments/testnet.json` (`demo_real_jev_8e25220`), log in `deployments/testnet-demo-real-jev-8e25220.log`, and every submitted tx was checked as successful on Horizon testnet. The earlier 2026-10-16 run on the previous deployment (`demo_real_jev_v4`: 0.96 / 116 ms and 0.99 / 137 ms on the two allows) gave the same outcomes. "Settled" here means the transaction was submitted directly to Soroban testnet RPC; x402 facilitator settlement is shown separately below (self-hosted facilitator, testnet).
 
 On-chain denials show up in the enforcing simulation, so the transaction is never submitted
 and no fee is paid. The operator gates off-chain on the same rule `jev_verifier` enforces

@@ -2,18 +2,23 @@
   "network": "testnet",
   "rpcUrl": "https://soroban-testnet.stellar.org",
   "networkPassphrase": "Test SDF Network ; September 2015",
-  "deployedAt": "2026-10-16",
+  "deployedAt": "2026-10-20",
   "soroban_sdk": "28.0.0",
-  "oz_stellar_contracts_rev": "33b665b",
+  "oz_stellar_contracts_rev": "8e25220",
   "contracts": {
-    "jev_verifier": "CAPPEWGOIP5O657NVBWKSMYLTXDO4VRUJ3PTFAKRPL6MJSKRFN4CS3S7",
-    "jev_policy": "CDLFJR3PKOJ7M5BFEZ6PYADM7NV3MTRAE7OJ2FFN6ZOCDCU3SLBSDT6W",
-    "oz_ed25519_verifier": "CB3E6UFXCXH3PHZ6ZAEAO4EXUPKOVDSZM3GKUJ2IX632ZCAKULEG4JCJ",
-    "oz_simple_threshold": "CD3JDARBUPAVOGBTT643PVXTMVC56R2MPRCWH6IQURDC7CLIDPZH66ES",
-    "oz_spending_limit": "CCCYCEQUHUY6IB4MGJBVNJP5FKFTDIRDBNKIOID6DXU24IUHF5NSBP35"
+    "jev_verifier": "CCSXNARWVDXYOXTFZG5FPWX6JQNIET3CV4BJQNBG5BJZDZEGTXSOB32W",
+    "jev_policy": "CA6L6G2O3ZDT4T3HBM3RIGDZBO54NIQ3MWOSYGIKCZ76WLL6YNS2PQBQ",
+    "oz_ed25519_verifier": "CBDOJI755Y7EE2IN7VMNGIFDSAXCCKLONMGLJ6SXXETNHKW3FQCB45I2",
+    "oz_simple_threshold": "CD7DECTT2DMVZP5M3VYI4Y5F4DLJB2NYEL54SW2PSAZNWRBFFILSPBBF",
+    "oz_spending_limit": "CAEXTTDUEQGIYHDDLMI6TKN6N27QNK5UOWMAV62IAYF456AK6V5YFNSZ"
   },
   "wasmHashes": {
-    "oz_smart_account": "e741609f7996310ed87209e843a4af20aae2c565d7ae581ae477da0fbaa04c41"
+    "oz_smart_account": "1068fdfd22bb15809d5654e285138b070c8f24aa433c0c670abeba02aef5a12e",
+    "jev_verifier": "5162d8e9d98488d4cfe364b522c42d19e2ad0da95cd9d42fb85efd74b2e69a83",
+    "jev_policy": "99f980f37741ae7b6954907106d085734a40870ae845ddb12bfecdd6e7da74c8",
+    "oz_ed25519_verifier": "fafb19bda37a228c0cf005bfce6e8c90fd1ef1e7fae33606898e0c6b6fa1da8c",
+    "oz_simple_threshold": "559b5e0ee67163ad49d91dcfac0bf7cba567c6cb6d8f62e1175d9f1bf858ae3a",
+    "oz_spending_limit": "5d3e2e18b2eff028331c8984ef6a3393e3126133c3deeb488a38c1059dd2c190"
   },
   "assets": {
     "native_xlm_sac": "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC"
@@ -108,5 +113,77 @@
     "record": "deployments/testnet-x402-settled.json",
     "doc": "docs/architecture/x402-settlement.md",
     "horizonVerified": true
+  },
+  "deployTxs_2026_10_20": {
+    "jev_verifier_deploy": "5dc69e3dbd9fbb6157e2f519dfc73134ee3b48772d71f2ade600f447fd03db6c",
+    "jev_policy_upload": "b72f810f57781eeff161246122f8ef3fb16c98c20faead19545f94e53a06ad79",
+    "jev_policy_deploy": "4a431f5d974b961a9554d2441c3144660238df1a9a456e331d8c683001cc3f4c",
+    "oz_ed25519_verifier_deploy": "cf6ea907e3df6a55453d0cad58a4f46d1b179f56b8e980d875fba1643757bb69",
+    "oz_simple_threshold_upload": "101771585acde5f9e113ea061450bf7defef495a3b1b7f6380ecb8ef7d9537ec",
+    "oz_simple_threshold_deploy": "a971f6a6f5535b1b5769d1931139e5cbff914febd872299f10be7833f75d9cd8",
+    "oz_spending_limit_upload": "c4723c7380dfbbc40f0ad13f200990edcaffc0c670c1d75dbcd4db553df935b7",
+    "oz_spending_limit_deploy": "dedde7465fcbe7844f7b4c08d5e493cb8b958936de9b683c3f82ea5cd8528923",
+    "oz_smart_account_upload": "7b8c30e0c80d1a4ffa8e8f50f193176f23cc56f9bbd85ba419180f2fa8786336",
+    "note": "jev_verifier and oz_ed25519_verifier wasm were byte-identical to an existing upload, so only a deploy tx was needed."
+  },
+  "previous_deployment": {
+    "deployedAt": "2026-10-16",
+    "oz_stellar_contracts_rev": "33b665b",
+    "contracts": {
+      "jev_verifier": "CAPPEWGOIP5O657NVBWKSMYLTXDO4VRUJ3PTFAKRPL6MJSKRFN4CS3S7",
+      "jev_policy": "CDLFJR3PKOJ7M5BFEZ6PYADM7NV3MTRAE7OJ2FFN6ZOCDCU3SLBSDT6W",
+      "oz_ed25519_verifier": "CB3E6UFXCXH3PHZ6ZAEAO4EXUPKOVDSZM3GKUJ2IX632ZCAKULEG4JCJ",
+      "oz_simple_threshold": "CD3JDARBUPAVOGBTT643PVXTMVC56R2MPRCWH6IQURDC7CLIDPZH66ES",
+      "oz_spending_limit": "CCCYCEQUHUY6IB4MGJBVNJP5FKFTDIRDBNKIOID6DXU24IUHF5NSBP35"
+    },
+    "wasmHashes": {
+      "oz_smart_account": "e741609f7996310ed87209e843a4af20aae2c565d7ae581ae477da0fbaa04c41"
+    },
+    "note": "Previous deployment (OZ 33b665b). Demo records below (demo, demo_real_jev_v4, demo_passkey_e2e, x402_settled_selfhosted) ran against these contracts."
+  },
+  "demo_real_jev_8e25220": {
+    "ranAt": "2026-10-20 (CST), after redeploy at OZ 8e25220",
+    "jev_model": "jev-1.13.0",
+    "framing": "v4",
+    "tau": 0.8,
+    "owner": "ed25519 (CLI demo)",
+    "smartAccount": "CBY7NPB2CZ6KARX67NDH2YHN7WKR5E7MMCDV4SSWJKTCA3GULDG7EWM3",
+    "sessionRuleId": 1,
+    "intentHash": "6c454e41212b1cfed568de4cdbfa4c7146451e50930a6d37ae77c3853eb05a5d",
+    "txs": {
+      "deploy_account": "73b2984bbdc1f95e5d0e8429cdb5888840c90a25e7afe7d514fd9006400a701d",
+      "fund_account": "5d0e656308aefc50c4f0923a32cc48f2042342f11f9cdb59906ca98c32f6ae81",
+      "install_session": "4d0789bedfad6034047dfebb058cbf4a6e577d2d6cefb49e9a32f86e8e39cafb",
+      "allow_3xlm": "7583fa6a3a630a639a2e4c2f5567c5f107ecb2618a9575054b6738e3f30dc096",
+      "allow_4xlm": "2f97c8204b5a5e1cdcf60e236871eff40afca6f170d922b012021390056d9077"
+    },
+    "jev": {
+      "allow_3xlm": {
+        "pAllow": 0.98,
+        "latencyMs": 84
+      },
+      "unknown_recipient": {
+        "verdict": "deny",
+        "pAllow": 0,
+        "latencyMs": 142
+      },
+      "prompt_injection": {
+        "verdict": "deny",
+        "pAllow": 0.01,
+        "latencyMs": 86
+      },
+      "allow_4xlm": {
+        "pAllow": 0.98,
+        "latencyMs": 86
+      }
+    },
+    "denials_at_enforcing_simulation": {
+      "jev_veto": 3003,
+      "jev_policy_recipient": 4207,
+      "jev_policy_per_call_cap": 4206,
+      "spending_limit_window": 3221
+    },
+    "submission": "direct submission to Soroban testnet RPC",
+    "log": "deployments/testnet-demo-real-jev-8e25220.log"
   }
 }
