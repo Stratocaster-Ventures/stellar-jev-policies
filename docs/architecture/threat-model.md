@@ -1,6 +1,6 @@
 # Threat model
 
-Scope: POC contracts at the commit in `deployments/testnet.json` (OZ `33b665b`, soroban-sdk 28.0.0), operator service, web console. Not audited.
+Scope: POC contracts at the commit in `deployments/testnet.json` (OZ `8e25220`, soroban-sdk 28.0.0; deployed testnet contracts were built at `33b665b`), operator service, web console. Not audited.
 
 ## Trust assumptions
 

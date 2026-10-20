@@ -39,7 +39,7 @@ See [docs/architecture/](docs/architecture/README.md) (overview, components, flo
 |---|---|
 | `contracts/jev_verifier` | OZ `Verifier`. The key data is a compact `JevKey` (operator set, k, pinned `model_id`, `intent_hash`, `tau_allow_ppm`, template, max age). The signature data is XDR `JevDecision`. It checks the verdict (deny/escalate veto), `p_allow ≥ τ`, the grant-time commitments, freshness, and k-of-n ed25519 signatures with strictly ascending indices over `sha256(xdr(DecisionBody{auth_digest,…}))`. |
 | `contracts/jev_policy` | OZ `Policy` (install / enforce / uninstall, panic = deny). On **every** call it re-checks: (a) the pinned `spending_limit` is still on the rule, (b) the Jev signer authenticated, (c) a (contract, fn) allowlist, (d) token-scoped rules (a per-call cap and a recipient allowlist for SEP-41 `transfer`/`approve`). |
-| `contracts/oz_*` | OZ reference contracts vendored unchanged from `stellar-contracts@33b665b` examples: smart account, ed25519 verifier, spending_limit, simple_threshold. The upgradeable module was removed from the account. |
+| `contracts/oz_*` | OZ reference contracts vendored unchanged from `stellar-contracts@8e25220` examples: smart account, ed25519 verifier, spending_limit, simple_threshold. The upgradeable module was removed from the account. |
 | `packages/jev-policies` | TypeScript library, `jev-policies` CLI and Jev operator service (`@stellar/stellar-sdk` 17.2.1). |
 | `deployments/testnet.json` | Testnet contract IDs, the smart-account wasm hash, and demo transaction hashes. |
 | `scripts/demo.sh` | 8-scenario end-to-end demo plus the x402 demo; real-Jev output is in `deployments/testnet-demo-real-jev-v4.log`. |
@@ -130,7 +130,8 @@ The agent calls an x402 v2 resource server (`PAYMENT-REQUIRED` / `PAYMENT-SIGNAT
 ## Versions and compatibility findings
 
 - **`stellar-accounts` 0.7.2 on crates.io depends on soroban-sdk 26.1, not 28.** OZ `main`
-  (`33b665b`, version label 0.7.1) is on soroban-sdk **28.0.0**. We pin that git revision, and
+  (`8e25220`, version label 0.7.1) is on soroban-sdk **28.0.0** and includes the v0.7.3 delegated-signer
+  security fix (the v0.7.3 tag itself is on sdk 26.1). We pin that git revision, and
   `cargo tree` shows a single soroban-sdk 28.0.0. Switch to the crates.io release once OZ publishes an sdk-28 version.
 - OZ caps `Signer::External` key data at **256 bytes**. An XDR-encoded `JevKey` doesn't fit, so the key
   uses a fixed binary layout (79 + 32·n bytes, n ≤ 4 operators). `encode_key` is exposed on-chain, and

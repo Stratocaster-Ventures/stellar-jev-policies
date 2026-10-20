@@ -30,7 +30,7 @@ A vetoed or stale decision is not an error: `verify` returns false and OZ reject
 
 | Scenario | Code | Origin |
 |---|---|---|
-| Jev veto | 3003 | OZ smart account (open item: confirm exact OZ error name at `33b665b`) |
+| Jev veto | 3003 | OZ smart account (open item: confirm exact OZ error name at `8e25220`) |
 | Recipient not allowed | 4207 | jev_policy |
 | Per-call cap | 4206 | jev_policy |
 | Spending window exceeded | 3221 | OZ spending_limit (open item: confirm name) |

@@ -1,6 +1,6 @@
 # Contract spec (normative)
 
-Key words MUST, MUST NOT, SHOULD follow RFC 2119. Source of truth: `contracts/jev_verifier/src/lib.rs`, `contracts/jev_policy/src/lib.rs`. Toolchain: soroban-sdk 28.0.0, OZ stellar-contracts `33b665b`.
+Key words MUST, MUST NOT, SHOULD follow RFC 2119. Source of truth: `contracts/jev_verifier/src/lib.rs`, `contracts/jev_policy/src/lib.rs`. Toolchain: soroban-sdk 28.0.0, OZ stellar-contracts `8e25220` (v0.7.3 security fix, sdk 28).
 
 ## jev_verifier (implements OZ `Verifier`, `KeyData = Bytes`, `SigData = Bytes`)
 
